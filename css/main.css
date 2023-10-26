@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+html {
+  font-size: 16px;
+  touch-action: manipulation;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Kosugi Maru",
+    "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+  background-color: #ccffff;
+}
+
+#contents {
+  width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  background-color: white;
+}
+
+header {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 42px;
+  text-align: left;
+  background-color: #c0cbff;
+  border: 1px solid #c0cbff;
+}
+
+header .title {
+  margin: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000055;
+}
+
+header #version {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #7777aa;
+}
+
+footer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #7777aa;
+  background-color: #c0cbff;
+}
