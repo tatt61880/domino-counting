@@ -231,6 +231,11 @@
     if (numMax % 2 !== 0) {
       return 0;
     }
+
+    if (numMax === 0) {
+      return 1;
+    }
+
     numMax /= 2;
 
     dfs(0, 0);
