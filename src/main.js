@@ -1,6 +1,6 @@
 (function () {
-  "use strict";
-  const VERSION_TEXT = "v2023.10.27";
+  'use strict';
+  const VERSION_TEXT = 'v2023.10.27c';
 
   const app = window.app;
   Object.freeze(app);
@@ -28,9 +28,9 @@
 
   let drawingFlag = false;
   let drawingState = null;
-  let prev = { x: null, y: null };
+  const prev = { x: null, y: null };
 
-  document.addEventListener("DOMContentLoaded", onloadApp);
+  document.addEventListener('DOMContentLoaded', onloadApp);
   return;
   // ==========================================================================
 
@@ -38,21 +38,21 @@
     elems.version.textContent = VERSION_TEXT;
 
     if (window.ontouchstart === undefined) {
-      elems.svg.addEventListener("mousedown", pointerdown, false);
+      elems.svg.addEventListener('mousedown', pointerdown, false);
     } else {
-      elems.svg.addEventListener("touchstart", pointerdown, false);
+      elems.svg.addEventListener('touchstart', pointerdown, false);
     }
     if (window.ontouchmove === undefined) {
-      elems.svg.addEventListener("mousemove", pointermove, false);
+      elems.svg.addEventListener('mousemove', pointermove, false);
     } else {
-      elems.svg.addEventListener("touchmove", pointermove, false);
+      elems.svg.addEventListener('touchmove', pointermove, false);
     }
     if (window.ontouchend === undefined) {
-      elems.svg.addEventListener("mouseup", pointerup, false);
-      document.addEventListener("mouseup", pointerup, false);
+      elems.svg.addEventListener('mouseup', pointerup, false);
+      document.addEventListener('mouseup', pointerup, false);
     } else {
-      elems.svg.addEventListener("touchend", pointerup, false);
-      document.addEventListener("touchend", pointerup, false);
+      elems.svg.addEventListener('touchend', pointerup, false);
+      document.addEventListener('touchend', pointerup, false);
     }
 
     update();
@@ -124,19 +124,19 @@
   }
 
   function updateSvg() {
-    elems.svg.textContent = "";
+    elems.svg.textContent = '';
 
-    elems.svg.setAttribute("width", blockSize * maxW);
-    elems.svg.setAttribute("height", blockSize * maxH);
+    elems.svg.setAttribute('width', blockSize * maxW);
+    elems.svg.setAttribute('height', blockSize * maxH);
 
     const g = svg.createG();
     elems.svg.appendChild(g);
 
-    const lineColor = "#aaaaaa";
-    const wallColor = "#ffffff";
-    const floorColor = "#ffbb88";
-    const wallStroke = "none";
-    const floorStroke = "#ff8800";
+    const lineColor = '#aaaaaa';
+    const wallColor = '#ffffff';
+    const floorColor = '#ffbb88';
+    const wallStroke = 'none';
+    const floorStroke = '#ff8800';
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
@@ -178,9 +178,9 @@
 
   function dfs(y0, x0) {
     for (let y = y0; y < maxH; y++) {
-      const x00 = y == y0 ? x0 : 0;
+      const x00 = y === y0 ? x0 : 0;
       for (let x = x00; x < maxW; x++) {
-        if (states[y][x] == stateNone) {
+        if (states[y][x] === stateNone) {
           if (x !== maxW - 1) {
             // 横置き
             if (states[y][x + 1] === stateNone) {
