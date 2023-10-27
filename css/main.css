@@ -58,3 +58,7 @@ footer {
 svg {
   margin: 5px;
 }
+
+g {
+  pointer-events: none;
+}
