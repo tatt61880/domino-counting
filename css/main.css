@@ -7,14 +7,8 @@ html {
 
 body {
   margin: 0;
-  font-family:
-    "Kosugi Maru",
-    "Helvetica Neue",
-    Arial,
-    "Hiragino Kaku Gothic ProN",
-    "Hiragino Sans",
-    Meiryo,
-    sans-serif;
+  font-family: "Kosugi Maru", "Helvetica Neue", Arial,
+    "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
   background-color: #ccffff;
 }
 
@@ -59,4 +53,8 @@ footer {
   font-weight: bold;
   color: #7777aa;
   background-color: #c0cbff;
+}
+
+svg {
+  margin: 5px;
 }
