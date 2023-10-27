@@ -54,11 +54,22 @@ footer {
   align-items: center;
   justify-content: center;
   height: 26px;
-  margin: 10px 0;
   font-size: 1rem;
   font-weight: bold;
   color: #7777aa;
   background-color: #c0cbff;
+}
+
+#main {
+  display: table;
+  width: 100%;
+  height: calc(100svh - 68px);
+}
+
+#main-inner {
+  display: table-cell;
+  padding: 10px;
+  vertical-align: middle;
 }
 
 svg {
@@ -72,5 +83,5 @@ g {
 }
 
 #result {
-  font-size: 3rem;
+  font-size: 2rem;
 }
