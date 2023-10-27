@@ -9,7 +9,7 @@
 
   const maxW = 6;
   const maxH = 6;
-  const blockSize = 30;
+  const blockSize = 50;
 
   const stateNone = 0;
   const stateWall = 1;
