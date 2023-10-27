@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.27c';
+  const VERSION_TEXT = 'v2023.10.27d';
 
   const app = window.app;
   Object.freeze(app);
@@ -119,8 +119,8 @@
   }
 
   function update() {
-    updateSvg();
     updateResult();
+    updateSvg();
   }
 
   function updateSvg() {
@@ -133,10 +133,42 @@
     elems.svg.appendChild(g);
 
     const lineColor = '#aaaaaa';
-    const wallColor = '#ffffff';
-    const floorColor = '#ffbb88';
+
+    const wallColor = 'none';
     const wallStroke = 'none';
-    const floorStroke = '#ff8800';
+
+    const floorColor = '#ffbb88';
+    const floorStroke = '#fd7e00';
+
+    // 点線
+    {
+      const dotRatio = 1 / 40;
+      const size = blockSize * dotRatio;
+      const strokeDasharray = `${size} ${4 * size}`;
+      for (let y = 1; y < maxH; y++) {
+        const line = svg.createLine(blockSize, {
+          x1: -0.5 * dotRatio,
+          y1: y,
+          x2: maxW,
+          y2: y,
+          stroke: lineColor,
+        });
+
+        line.setAttribute('stroke-dasharray', strokeDasharray);
+        g.appendChild(line);
+      }
+      for (let x = 1; x < maxW; x++) {
+        const line = svg.createLine(blockSize, {
+          x1: x,
+          y1: -0.5 * dotRatio,
+          x2: x,
+          y2: maxH,
+          stroke: lineColor,
+        });
+        line.setAttribute('stroke-dasharray', strokeDasharray);
+        g.appendChild(line);
+      }
+    }
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
@@ -152,27 +184,6 @@
         });
         g.appendChild(rect);
       }
-    }
-
-    for (let y = 0; y <= maxH; y++) {
-      const line = svg.createLine(blockSize, {
-        x1: 0,
-        y1: y,
-        x2: maxW,
-        y2: y,
-        stroke: lineColor,
-      });
-      g.appendChild(line);
-    }
-    for (let x = 0; x <= maxW; x++) {
-      const line = svg.createLine(blockSize, {
-        x1: x,
-        y1: 0,
-        x2: x,
-        y2: maxH,
-        stroke: lineColor,
-      });
-      g.appendChild(line);
     }
   }
 
