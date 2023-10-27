@@ -61,3 +61,7 @@ svg {
 g {
   pointer-events: none;
 }
+
+#result {
+  font-size: 3rem;
+}
