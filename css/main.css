@@ -49,12 +49,12 @@ header #version {
 }
 
 footer {
-  margin: 10px 0;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 26px;
+  margin: 10px 0;
   font-size: 1rem;
   font-weight: bold;
   color: #7777aa;
