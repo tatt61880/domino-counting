@@ -214,38 +214,38 @@
       for (let y = y0; y < maxH; y++) {
         const x00 = y === y0 ? x0 : 0;
         for (let x = x00; x < maxW; x++) {
-          if (states[y][x] === stateNone) {
-            if (x !== maxW - 1) {
-              // 横置き
-              if (states[y][x + 1] === stateNone) {
-                num++;
-                if (num === numMax) {
-                  ans++;
-                } else {
-                  states[y][x] = states[y][x + 1] = stateWall;
-                  dfs(y, x + 2);
-                  states[y][x] = states[y][x + 1] = stateNone;
-                }
-                num--;
-              }
-            }
+          if (states[y][x] !== stateNone) continue;
 
-            if (y !== maxH - 1) {
-              // 縦置き
-              if (states[y + 1][x] === stateNone) {
-                num++;
-                if (num === numMax) {
-                  ans++;
-                } else {
-                  states[y][x] = states[y + 1][x] = stateWall;
-                  dfs(y, x + 1);
-                  states[y][x] = states[y + 1][x] = stateNone;
-                }
-                num--;
+          if (x !== maxW - 1) {
+            // 横置き
+            if (states[y][x + 1] === stateNone) {
+              num++;
+              if (num === numMax) {
+                ans++;
+              } else {
+                states[y][x] = states[y][x + 1] = stateWall;
+                dfs(y, x + 2);
+                states[y][x] = states[y][x + 1] = stateNone;
               }
+              num--;
             }
-            return;
           }
+
+          if (y !== maxH - 1) {
+            // 縦置き
+            if (states[y + 1][x] === stateNone) {
+              num++;
+              if (num === numMax) {
+                ans++;
+              } else {
+                states[y][x] = states[y + 1][x] = stateWall;
+                dfs(y, x + 1);
+                states[y][x] = states[y + 1][x] = stateNone;
+              }
+              num--;
+            }
+          }
+          return;
         }
       }
     }
