@@ -7,7 +7,7 @@
   const elems = app.elems;
   const svg = app.svg;
 
-  const maxW = 6;
+  const maxW = 7;
   const maxH = 6;
   const blockSize = 50;
 
