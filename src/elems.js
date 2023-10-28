@@ -10,6 +10,7 @@
 
   const elems = new app.Elems({
     version: 'version',
+    num: 'num',
     svg: 'svg',
     result: 'result',
   });

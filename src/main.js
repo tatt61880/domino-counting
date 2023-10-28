@@ -254,7 +254,7 @@
   function updateResult() {
     const [result, numOrange] = dominoCount();
 
-    const text = `${result}\n(マスの数: ${numOrange})`;
-    elems.result.innerText = text;
+    elems.num.innerText = `${numOrange}マス`;
+    elems.result.innerText = `${result}通り`;
   }
 })();
