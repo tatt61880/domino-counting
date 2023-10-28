@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.28';
+  const VERSION_TEXT = 'v2023.10.28c';
 
   const app = window.app;
   Object.freeze(app);
@@ -185,30 +185,30 @@
 
   function dominoCount() {
     let ans = 0;
-    let num = 0;
-    let numMax = 0;
+    let numDomino = 0;
+    let numOrange = 0;
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
         if (states[y][x] === stateNone) {
-          numMax++;
+          numOrange++;
         }
       }
     }
 
-    if (numMax % 2 !== 0) {
-      return 0;
+    if (numOrange % 2 !== 0) {
+      return [0, numOrange];
     }
 
-    if (numMax === 0) {
-      return 1;
+    if (numOrange === 0) {
+      return [1, numOrange];
     }
 
-    numMax /= 2;
+    const numDominoMax = numOrange / 2;
 
     dfs(0, 0);
 
-    return ans;
+    return [ans, numOrange];
 
     function dfs(y0, x0) {
       for (let y = y0; y < maxH; y++) {
@@ -219,30 +219,30 @@
           if (x !== maxW - 1) {
             // 横置き
             if (states[y][x + 1] === stateNone) {
-              num++;
-              if (num === numMax) {
+              numDomino++;
+              if (numDomino === numDominoMax) {
                 ans++;
               } else {
                 states[y][x] = states[y][x + 1] = stateWall;
                 dfs(y, x + 2);
                 states[y][x] = states[y][x + 1] = stateNone;
               }
-              num--;
+              numDomino--;
             }
           }
 
           if (y !== maxH - 1) {
             // 縦置き
             if (states[y + 1][x] === stateNone) {
-              num++;
-              if (num === numMax) {
+              numDomino++;
+              if (numDomino === numDominoMax) {
                 ans++;
               } else {
                 states[y][x] = states[y + 1][x] = stateWall;
                 dfs(y, x + 1);
                 states[y][x] = states[y + 1][x] = stateNone;
               }
-              num--;
+              numDomino--;
             }
           }
           return;
@@ -252,7 +252,9 @@
   }
 
   function updateResult() {
-    const num = dominoCount();
-    elems.result.innerText = num;
+    const [result, numOrange] = dominoCount();
+
+    const text = `${result}\n(マスの数: ${numOrange})`;
+    elems.result.innerText = text;
   }
 })();
