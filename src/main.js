@@ -136,6 +136,20 @@
     const floorColor = '#ffbb88';
     const floorStroke = '#fd7e00';
 
+    {
+      const fill = 'white';
+      const stroke = 'none';
+      const rect = svg.createRect(blockSize, {
+        x: 0,
+        y: 0,
+        width: maxW,
+        height: maxH,
+        fill,
+        stroke,
+      });
+      g.appendChild(rect);
+    }
+
     // 点線
     {
       const dotRatio = 1 / 40;
