@@ -14,10 +14,6 @@
   const stateNone = 0;
   const stateWall = 1;
 
-  let ans = 0;
-  let num = 0;
-  let numMax = 0;
-
   const states = [];
   for (let y = 0; y < maxH; ++y) {
     states[y] = [];
@@ -187,50 +183,11 @@
     }
   }
 
-  function dfs(y0, x0) {
-    for (let y = y0; y < maxH; y++) {
-      const x00 = y === y0 ? x0 : 0;
-      for (let x = x00; x < maxW; x++) {
-        if (states[y][x] === stateNone) {
-          if (x !== maxW - 1) {
-            // 横置き
-            if (states[y][x + 1] === stateNone) {
-              num++;
-              if (num === numMax) {
-                ans++;
-              } else {
-                states[y][x] = states[y][x + 1] = stateWall;
-                dfs(y, x + 2);
-                states[y][x] = states[y][x + 1] = stateNone;
-              }
-              num--;
-            }
-          }
-
-          if (y !== maxH - 1) {
-            // 縦置き
-            if (states[y + 1][x] === stateNone) {
-              num++;
-              if (num === numMax) {
-                ans++;
-              } else {
-                states[y][x] = states[y + 1][x] = stateWall;
-                dfs(y, x + 1);
-                states[y][x] = states[y + 1][x] = stateNone;
-              }
-              num--;
-            }
-          }
-          return;
-        }
-      }
-    }
-  }
-
   function dominoCount() {
-    ans = 0;
-    num = 0;
-    numMax = 0;
+    let ans = 0;
+    let num = 0;
+    let numMax = 0;
+
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
         if (states[y][x] === stateNone) {
@@ -252,6 +209,46 @@
     dfs(0, 0);
 
     return ans;
+
+    function dfs(y0, x0) {
+      for (let y = y0; y < maxH; y++) {
+        const x00 = y === y0 ? x0 : 0;
+        for (let x = x00; x < maxW; x++) {
+          if (states[y][x] === stateNone) {
+            if (x !== maxW - 1) {
+              // 横置き
+              if (states[y][x + 1] === stateNone) {
+                num++;
+                if (num === numMax) {
+                  ans++;
+                } else {
+                  states[y][x] = states[y][x + 1] = stateWall;
+                  dfs(y, x + 2);
+                  states[y][x] = states[y][x + 1] = stateNone;
+                }
+                num--;
+              }
+            }
+
+            if (y !== maxH - 1) {
+              // 縦置き
+              if (states[y + 1][x] === stateNone) {
+                num++;
+                if (num === numMax) {
+                  ans++;
+                } else {
+                  states[y][x] = states[y + 1][x] = stateWall;
+                  dfs(y, x + 1);
+                  states[y][x] = states[y + 1][x] = stateNone;
+                }
+                num--;
+              }
+            }
+            return;
+          }
+        }
+      }
+    }
   }
 
   function updateResult() {
