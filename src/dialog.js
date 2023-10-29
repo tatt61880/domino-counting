@@ -121,8 +121,11 @@
           states.push(state);
         }
 
-        const gStates = app.common.createStatesG(states, 10);
-        gStates.setAttribute('transform', `translate(5,5)`);
+        const gStates = app.common.createStatesG(
+          states,
+          (WIDTH - 14) / app.common.maxW
+        );
+        gStates.setAttribute('transform', `translate(7,5)`);
         g.appendChild(gStates);
 
         const pointerdownEventName =
