@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.29d';
+  const VERSION_TEXT = 'v2023.10.29e';
 
   const app = window.app;
   Object.freeze(app);
@@ -29,21 +29,23 @@
   function onloadApp() {
     elems.version.textContent = VERSION_TEXT;
 
+    const pointerdownEventName =
+      window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
+
     elems.collections.button.addEventListener(
-      'click',
+      pointerdownEventName,
       app.dialog.collections.show
     );
-
     elems.collections.close.addEventListener(
-      'click',
+      pointerdownEventName,
       app.dialog.collections.close
     );
     elems.collections.prev.addEventListener(
-      'click',
+      pointerdownEventName,
       app.dialog.collections.prevPage
     );
     elems.collections.next.addEventListener(
-      'click',
+      pointerdownEventName,
       app.dialog.collections.nextPage
     );
 
