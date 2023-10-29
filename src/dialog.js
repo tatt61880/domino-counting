@@ -84,10 +84,10 @@
       g.setAttribute('transform', `translate(${x},${y})`);
 
       const rect = app.svg.createRect(1, {
-        x: 1,
-        y: 1,
-        width: WIDTH - 2,
-        height: HEIGHT - 2,
+        x: 0,
+        y: 0,
+        width: WIDTH,
+        height: HEIGHT,
         fill: '#ffffff',
         stroke: '#dddddd',
       });
