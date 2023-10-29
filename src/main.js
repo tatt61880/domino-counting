@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.29';
+  const VERSION_TEXT = 'v2023.10.29c';
 
   const app = window.app;
   Object.freeze(app);
@@ -11,14 +11,14 @@
   const maxH = 6;
   const blockSize = 50;
 
-  const stateNone = 0;
-  const stateWall = 1;
+  const stateOff = 0;
+  const stateOn = 1;
 
   const states = [];
   for (let y = 0; y < maxH; ++y) {
     states[y] = [];
     for (let x = 0; x < maxW; ++x) {
-      states[y][x] = stateNone;
+      states[y][x] = stateOn;
     }
   }
 
@@ -87,7 +87,7 @@
     drawingFlag = true;
 
     const cur = getCursorXY(e);
-    drawingState = states[cur.y][cur.x] === stateWall ? stateNone : stateWall;
+    drawingState = states[cur.y][cur.x] === stateOff ? stateOn : stateOff;
     pointermove(e);
   }
 
@@ -182,8 +182,8 @@
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
-        const fill = states[y][x] === stateWall ? wallColor : floorColor;
-        const stroke = states[y][x] === stateWall ? wallStroke : floorStroke;
+        const fill = states[y][x] === stateOff ? wallColor : floorColor;
+        const stroke = states[y][x] === stateOff ? wallStroke : floorStroke;
         const rect = svg.createRect(blockSize, {
           x,
           y,
@@ -204,7 +204,7 @@
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
-        if (states[y][x] === stateNone) {
+        if (states[y][x] === stateOn) {
           numOrange++;
         }
       }
@@ -228,18 +228,18 @@
       for (let y = y0; y < maxH; y++) {
         const x00 = y === y0 ? x0 : 0;
         for (let x = x00; x < maxW; x++) {
-          if (states[y][x] !== stateNone) continue;
+          if (states[y][x] !== stateOn) continue;
 
           if (x !== maxW - 1) {
             // 横置き
-            if (states[y][x + 1] === stateNone) {
+            if (states[y][x + 1] === stateOn) {
               numDomino++;
               if (numDomino === numDominoMax) {
                 ans++;
               } else {
-                states[y][x] = states[y][x + 1] = stateWall;
+                states[y][x] = states[y][x + 1] = stateOff;
                 dfs(y, x + 2);
-                states[y][x] = states[y][x + 1] = stateNone;
+                states[y][x] = states[y][x + 1] = stateOn;
               }
               numDomino--;
             }
@@ -247,14 +247,14 @@
 
           if (y !== maxH - 1) {
             // 縦置き
-            if (states[y + 1][x] === stateNone) {
+            if (states[y + 1][x] === stateOn) {
               numDomino++;
               if (numDomino === numDominoMax) {
                 ans++;
               } else {
-                states[y][x] = states[y + 1][x] = stateWall;
+                states[y][x] = states[y + 1][x] = stateOff;
                 dfs(y, x + 1);
-                states[y][x] = states[y + 1][x] = stateNone;
+                states[y][x] = states[y + 1][x] = stateOn;
               }
               numDomino--;
             }
@@ -270,5 +270,7 @@
 
     elems.num.innerText = `${numOrange}マス`;
     elems.result.innerText = `${result}通り`;
+
+    app.savedata.saveCount(result, states);
   }
 })();
