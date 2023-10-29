@@ -9,14 +9,17 @@
   <link rel="apple-touch-icon" sizes="152x152" href="./images/apple-touch-icon.png?2023.10.29">
   <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./css/main.css?2023.10.29c">
+  <link rel="stylesheet" href="./css/main.css?2023.10.29d">
 
-  <script src="./src/class-elems.js?2023.10.29c"></script>
-  <script src="./src/class-savedata.js?2023.10.29c"></script>
+  <script src="./src/class-elems.js?2023.10.29d"></script>
+  <script src="./src/class-savedata.js?2023.10.29d"></script>
 
-  <script src="./src/elems.js?2023.10.29c"></script>
-  <script src="./src/svg.js?2023.10.29c"></script>
-  <script src="./src/main.js?2023.10.29c"></script>
+  <script src="./src/elems.js?2023.10.29d"></script>
+  <script src="./src/svg.js?2023.10.29d"></script>
+
+  <script src="./src/common.js?2023.10.29d"></script>
+  <script src="./src/dialog.js?2023.10.29d"></script>
+  <script src="./src/main.js?2023.10.29d"></script>
 </head>
 
 <body>
@@ -35,8 +38,56 @@
         <svg id="svg"></svg>
         <br>
         <span id="result"></span>
+
+        <div id="button-collections" class="title-button">
+          <svg id="button-collections-svg" width="150" height="100">
+            <g class="button">
+              <rect x="5" y="5" rx="20" ry="20" width="140" height="90" fill="#aaccff" stroke="#0000f8"
+                stroke-width="4" />
+              <text x="75" y="50" dominant-baseline="middle" text-anchor="middle" font-weight="bold" font-size="16px"
+                fill="#0000f8">コレクション</text>
+            </g>
+          </svg>
+        </div>
       </div>
     </div>
+
+    <dialog id="dialog-collections">
+      <div id="dialog-collections-div">
+        <div id="collections-top">
+          <svg width="36" height="36">
+            <g id="dialog-collections-close" class="button active-hover" transform="translate(18,18)">
+              <circle cx="0" cy="0" r="18" fill="#dddddd" stroke="none" />
+              <path d="M -8 -8 8 8" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round" />
+              <path d="M -8 8 8 -8" fill="none" stroke="#333333" stroke-width="3" stroke-linecap="round" />
+            </g>
+          </svg>
+          <br>
+
+          <svg id="dialog-collections-svg">
+          </svg>
+
+          <br>
+
+          <svg width="450" height="80" id="button-collections-svg">
+            <g id="button-collections-prev" class="button active-hover" transform="translate(95,7)">
+              <rect x="0" y="0" rx="28" ry="28" width="80" height="56" fill="#eef0ff" stroke="#87ceeb"
+                stroke-width="4" />
+              <path d="M 50 14 24 28 50 42 Z" fill="#87ceeb" />
+              <text x="40" y="69" dominant-baseline="middle" text-anchor="middle" font-weight="bold" font-size="14px"
+                fill="#7799bb">Shift ←</text>
+            </g>
+            <g id="button-collections-next" class="button active-hover" transform="translate(275,7)">
+              <rect x="0" y="0" rx="28" ry="28" width="80" height="56" fill="#eef0ff" stroke="#87ceeb"
+                stroke-width="4" />
+              <path d="M 30 14 55 28 30 42 Z" fill="#87ceeb" />
+              <text x="40" y="69" dominant-baseline="middle" text-anchor="middle" font-weight="bold" font-size="14px"
+                fill="#7799bb">Shift →</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </dialog>
 
     <footer>
       <span>@tatt61880</span>

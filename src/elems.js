@@ -13,6 +13,15 @@
     num: 'num',
     svg: 'svg',
     result: 'result',
+
+    collections: {
+      button: 'button-collections',
+      dialogSvg: 'dialog-collections-svg',
+      dialog: 'dialog-collections',
+      close: 'dialog-collections-close',
+      prev: 'button-collections-prev',
+      next: 'button-collections-next',
+    },
   });
 
   if (isBrowser) {

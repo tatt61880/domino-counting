@@ -72,7 +72,7 @@ footer {
   vertical-align: middle;
 }
 
-svg {
+#svg {
   margin: 5px;
   cursor: pointer;
   border: 2px solid black;
@@ -84,4 +84,18 @@ g {
 
 #result {
   font-size: 2rem;
+}
+
+#button-collections {
+  margin: 15px 0;
+}
+
+.button {
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+}
+
+.hide {
+  display: none;
 }

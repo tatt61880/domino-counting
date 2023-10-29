@@ -1,24 +1,20 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.29c';
+  const VERSION_TEXT = 'v2023.10.29d';
 
   const app = window.app;
   Object.freeze(app);
   const elems = app.elems;
-  const svg = app.svg;
 
   const maxW = 7;
   const maxH = 6;
   const blockSize = 50;
 
-  const stateOff = 0;
-  const stateOn = 1;
-
   const states = [];
   for (let y = 0; y < maxH; ++y) {
     states[y] = [];
     for (let x = 0; x < maxW; ++x) {
-      states[y][x] = stateOn;
+      states[y][x] = app.common.stateOn;
     }
   }
 
@@ -33,22 +29,40 @@
   function onloadApp() {
     elems.version.textContent = VERSION_TEXT;
 
+    elems.collections.button.addEventListener(
+      'click',
+      app.dialog.collections.show
+    );
+
+    elems.collections.close.addEventListener(
+      'click',
+      app.dialog.collections.close
+    );
+    elems.collections.prev.addEventListener(
+      'click',
+      app.dialog.collections.prevPage
+    );
+    elems.collections.next.addEventListener(
+      'click',
+      app.dialog.collections.nextPage
+    );
+
     if (window.ontouchstart === undefined) {
-      elems.svg.addEventListener('mousedown', pointerdown, false);
+      elems.svg.addEventListener('mousedown', pointerdown);
     } else {
-      elems.svg.addEventListener('touchstart', pointerdown, false);
+      elems.svg.addEventListener('touchstart', pointerdown);
     }
     if (window.ontouchmove === undefined) {
-      elems.svg.addEventListener('mousemove', pointermove, false);
+      elems.svg.addEventListener('mousemove', pointermove);
     } else {
-      elems.svg.addEventListener('touchmove', pointermove, false);
+      elems.svg.addEventListener('touchmove', pointermove);
     }
     if (window.ontouchend === undefined) {
-      elems.svg.addEventListener('mouseup', pointerup, false);
-      document.addEventListener('mouseup', pointerup, false);
+      elems.svg.addEventListener('mouseup', pointerup);
+      document.addEventListener('mouseup', pointerup);
     } else {
-      elems.svg.addEventListener('touchend', pointerup, false);
-      document.addEventListener('touchend', pointerup, false);
+      elems.svg.addEventListener('touchend', pointerup);
+      document.addEventListener('touchend', pointerup);
     }
 
     update();
@@ -87,7 +101,10 @@
     drawingFlag = true;
 
     const cur = getCursorXY(e);
-    drawingState = states[cur.y][cur.x] === stateOff ? stateOn : stateOff;
+    drawingState =
+      states[cur.y][cur.x] === app.common.stateOff
+        ? app.common.stateOn
+        : app.common.stateOff;
     pointermove(e);
   }
 
@@ -125,76 +142,8 @@
     elems.svg.setAttribute('width', blockSize * maxW);
     elems.svg.setAttribute('height', blockSize * maxH);
 
-    const g = svg.createG();
+    const g = app.common.createStatesG(states, blockSize);
     elems.svg.appendChild(g);
-
-    const lineColor = '#aaaaaa';
-
-    const wallColor = 'none';
-    const wallStroke = 'none';
-
-    const floorColor = '#ffbb88';
-    const floorStroke = '#fd7e00';
-
-    {
-      const fill = 'white';
-      const stroke = 'none';
-      const rect = svg.createRect(blockSize, {
-        x: 0,
-        y: 0,
-        width: maxW,
-        height: maxH,
-        fill,
-        stroke,
-      });
-      g.appendChild(rect);
-    }
-
-    // 点線
-    {
-      const dotRatio = 1 / 40;
-      const size = blockSize * dotRatio;
-      const strokeDasharray = `${size} ${4 * size}`;
-      for (let y = 1; y < maxH; y++) {
-        const line = svg.createLine(blockSize, {
-          x1: -0.5 * dotRatio,
-          y1: y,
-          x2: maxW,
-          y2: y,
-          stroke: lineColor,
-        });
-
-        line.setAttribute('stroke-dasharray', strokeDasharray);
-        g.appendChild(line);
-      }
-      for (let x = 1; x < maxW; x++) {
-        const line = svg.createLine(blockSize, {
-          x1: x,
-          y1: -0.5 * dotRatio,
-          x2: x,
-          y2: maxH,
-          stroke: lineColor,
-        });
-        line.setAttribute('stroke-dasharray', strokeDasharray);
-        g.appendChild(line);
-      }
-    }
-
-    for (let y = 0; y < maxH; y++) {
-      for (let x = 0; x < maxW; x++) {
-        const fill = states[y][x] === stateOff ? wallColor : floorColor;
-        const stroke = states[y][x] === stateOff ? wallStroke : floorStroke;
-        const rect = svg.createRect(blockSize, {
-          x,
-          y,
-          width: 1,
-          height: 1,
-          fill,
-          stroke,
-        });
-        g.appendChild(rect);
-      }
-    }
   }
 
   function dominoCount() {
@@ -204,7 +153,7 @@
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
-        if (states[y][x] === stateOn) {
+        if (states[y][x] === app.common.stateOn) {
           numOrange++;
         }
       }
@@ -228,18 +177,18 @@
       for (let y = y0; y < maxH; y++) {
         const x00 = y === y0 ? x0 : 0;
         for (let x = x00; x < maxW; x++) {
-          if (states[y][x] !== stateOn) continue;
+          if (states[y][x] !== app.common.stateOn) continue;
 
           if (x !== maxW - 1) {
             // 横置き
-            if (states[y][x + 1] === stateOn) {
+            if (states[y][x + 1] === app.common.stateOn) {
               numDomino++;
               if (numDomino === numDominoMax) {
                 ans++;
               } else {
-                states[y][x] = states[y][x + 1] = stateOff;
+                states[y][x] = states[y][x + 1] = app.common.stateOff;
                 dfs(y, x + 2);
-                states[y][x] = states[y][x + 1] = stateOn;
+                states[y][x] = states[y][x + 1] = app.common.stateOn;
               }
               numDomino--;
             }
@@ -247,14 +196,14 @@
 
           if (y !== maxH - 1) {
             // 縦置き
-            if (states[y + 1][x] === stateOn) {
+            if (states[y + 1][x] === app.common.stateOn) {
               numDomino++;
               if (numDomino === numDominoMax) {
                 ans++;
               } else {
-                states[y][x] = states[y + 1][x] = stateOff;
+                states[y][x] = states[y + 1][x] = app.common.stateOff;
                 dfs(y, x + 1);
-                states[y][x] = states[y + 1][x] = stateOn;
+                states[y][x] = states[y + 1][x] = app.common.stateOn;
               }
               numDomino--;
             }
