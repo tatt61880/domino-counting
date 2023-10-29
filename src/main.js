@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.29g';
+  const VERSION_TEXT = 'v2023.10.29h';
 
   const app = window.app;
   Object.freeze(app);
@@ -8,7 +8,6 @@
 
   const maxW = 7;
   const maxH = 6;
-  const blockSize = 50;
 
   for (let y = 0; y < maxH; ++y) {
     app.common.states[y] = [];
@@ -93,8 +92,16 @@
   // カーソル位置の座標を得る
   function getCursorXY(e) {
     const cursorPos = getCursorPos(elems.svg, e);
-    const x = clamp(Math.floor(cursorPos.x / blockSize), 0, maxW - 1);
-    const y = clamp(Math.floor(cursorPos.y / blockSize), 0, maxH - 1);
+    const x = clamp(
+      Math.floor(cursorPos.x / app.common.blockSize),
+      0,
+      maxW - 1
+    );
+    const y = clamp(
+      Math.floor(cursorPos.y / app.common.blockSize),
+      0,
+      maxH - 1
+    );
     return { x, y };
 
     function clamp(val, min, max) {
@@ -147,10 +154,10 @@
   function updateSvg() {
     elems.svg.textContent = '';
 
-    elems.svg.setAttribute('width', blockSize * maxW);
-    elems.svg.setAttribute('height', blockSize * maxH);
+    elems.svg.setAttribute('width', app.common.blockSize * maxW);
+    elems.svg.setAttribute('height', app.common.blockSize * maxH);
 
-    const g = app.common.createStatesG(app.common.states, blockSize);
+    const g = app.common.createStatesG(app.common.states, app.common.blockSize);
     elems.svg.appendChild(g);
   }
 

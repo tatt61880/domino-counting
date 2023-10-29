@@ -9,6 +9,7 @@
 
   const stateOff = 0;
   const stateOn = 1;
+  const blockSize = 50;
 
   const svg = app.svg;
 
@@ -18,6 +19,7 @@
     states,
     stateOff,
     stateOn,
+    blockSize,
     createStatesG,
   };
 

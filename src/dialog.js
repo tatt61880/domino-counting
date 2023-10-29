@@ -88,7 +88,7 @@
         y: 1,
         width: WIDTH - 2,
         height: HEIGHT - 2,
-        fill: 'none',
+        fill: '#ffffff',
         stroke: '#dddddd',
       });
       rect.setAttribute('stroke-width', '2');
@@ -124,6 +124,27 @@
         const gStates = app.common.createStatesG(states, 10);
         gStates.setAttribute('transform', `translate(5,5)`);
         g.appendChild(gStates);
+
+        const pointerdownEventName =
+          window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
+
+        g.classList.add('button');
+        rect.addEventListener(pointerdownEventName, () => {
+          for (let y = 0; y < app.common.states.length; y++) {
+            for (let x = 0; x < app.common.states[0].length; x++) {
+              app.common.states[y][x] =
+                states[y] === undefined || states[y][x] !== app.common.stateOn
+                  ? app.common.stateOff
+                  : app.common.stateOn;
+            }
+          }
+          const g = app.common.createStatesG(
+            app.common.states,
+            app.common.blockSize
+          );
+          elems.svg.appendChild(g);
+          closeCollectionsDialog();
+        });
       }
 
       {
