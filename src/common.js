@@ -34,7 +34,10 @@
     const floorStroke = '#fd7e00';
 
     const maxH = states.length;
-    const maxW = states[0].length;
+    let maxW = 0;
+    for (const state of states) {
+      maxW = Math.max(maxW, state.length);
+    }
 
     {
       const fill = 'white';
