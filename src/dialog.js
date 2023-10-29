@@ -143,6 +143,7 @@
             app.common.blockSize
           );
           elems.svg.appendChild(g);
+          app.common.updateResult();
           closeCollectionsDialog();
         });
       }

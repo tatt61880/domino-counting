@@ -1,20 +1,10 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.29j';
+  const VERSION_TEXT = 'v2023.10.29k';
 
   const app = window.app;
   Object.freeze(app);
   const elems = app.elems;
-
-  const maxW = 7;
-  const maxH = 6;
-
-  for (let y = 0; y < maxH; ++y) {
-    app.common.states[y] = [];
-    for (let x = 0; x < maxW; ++x) {
-      app.common.states[y][x] = app.common.stateOn;
-    }
-  }
 
   let drawingFlag = false;
   let drawingState = null;
@@ -95,12 +85,12 @@
     const x = clamp(
       Math.floor(cursorPos.x / app.common.blockSize),
       0,
-      maxW - 1
+      app.common.maxW - 1
     );
     const y = clamp(
       Math.floor(cursorPos.y / app.common.blockSize),
       0,
-      maxH - 1
+      app.common.maxH - 1
     );
     return { x, y };
 
@@ -147,98 +137,17 @@
   }
 
   function update() {
-    updateResult();
+    app.common.updateResult();
     updateSvg();
   }
 
   function updateSvg() {
     elems.svg.textContent = '';
 
-    elems.svg.setAttribute('width', app.common.blockSize * maxW);
-    elems.svg.setAttribute('height', app.common.blockSize * maxH);
+    elems.svg.setAttribute('width', app.common.blockSize * app.common.maxW);
+    elems.svg.setAttribute('height', app.common.blockSize * app.common.maxH);
 
     const g = app.common.createStatesG(app.common.states, app.common.blockSize);
     elems.svg.appendChild(g);
-  }
-
-  function dominoCount() {
-    let ans = 0;
-    let numDomino = 0;
-    let numOrange = 0;
-
-    for (let y = 0; y < maxH; y++) {
-      for (let x = 0; x < maxW; x++) {
-        if (app.common.states[y][x] === app.common.stateOn) {
-          numOrange++;
-        }
-      }
-    }
-
-    if (numOrange % 2 !== 0) {
-      return [0, numOrange];
-    }
-
-    if (numOrange === 0) {
-      return [1, numOrange];
-    }
-
-    const numDominoMax = numOrange / 2;
-
-    dfs(0, 0);
-
-    return [ans, numOrange];
-
-    function dfs(y0, x0) {
-      for (let y = y0; y < maxH; y++) {
-        const x00 = y === y0 ? x0 : 0;
-        for (let x = x00; x < maxW; x++) {
-          if (app.common.states[y][x] !== app.common.stateOn) continue;
-
-          if (x !== maxW - 1) {
-            // 横置き
-            if (app.common.states[y][x + 1] === app.common.stateOn) {
-              numDomino++;
-              if (numDomino === numDominoMax) {
-                ans++;
-              } else {
-                app.common.states[y][x] = app.common.states[y][x + 1] =
-                  app.common.stateOff;
-                dfs(y, x + 2);
-                app.common.states[y][x] = app.common.states[y][x + 1] =
-                  app.common.stateOn;
-              }
-              numDomino--;
-            }
-          }
-
-          if (y !== maxH - 1) {
-            // 縦置き
-            if (app.common.states[y + 1][x] === app.common.stateOn) {
-              numDomino++;
-              if (numDomino === numDominoMax) {
-                ans++;
-              } else {
-                app.common.states[y][x] = app.common.states[y + 1][x] =
-                  app.common.stateOff;
-                dfs(y, x + 1);
-                app.common.states[y][x] = app.common.states[y + 1][x] =
-                  app.common.stateOn;
-              }
-              numDomino--;
-            }
-          }
-          return;
-        }
-      }
-    }
-  }
-
-  function updateResult() {
-    const [result, numOrange] = dominoCount();
-
-    elems.num.innerText = `${numOrange}マス`;
-    elems.result.innerText = `${result}通り`;
-
-    app.savedata.saveCount(result, app.common.states);
   }
 })();
