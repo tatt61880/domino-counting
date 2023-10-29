@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.29f';
+  const VERSION_TEXT = 'v2023.10.29g';
 
   const app = window.app;
   Object.freeze(app);
@@ -10,11 +10,10 @@
   const maxH = 6;
   const blockSize = 50;
 
-  const states = [];
   for (let y = 0; y < maxH; ++y) {
-    states[y] = [];
+    app.common.states[y] = [];
     for (let x = 0; x < maxW; ++x) {
-      states[y][x] = app.common.stateOn;
+      app.common.states[y][x] = app.common.stateOn;
     }
   }
 
@@ -39,6 +38,9 @@
     elems.collections.dialog.addEventListener(
       pointerdownEventName,
       app.dialog.collections.close
+    );
+    elems.collections.dialogDiv.addEventListener(pointerdownEventName, (e) =>
+      e.stopPropagation()
     );
     elems.collections.close.addEventListener(
       pointerdownEventName,
@@ -108,7 +110,7 @@
 
     const cur = getCursorXY(e);
     drawingState =
-      states[cur.y][cur.x] === app.common.stateOff
+      app.common.states[cur.y][cur.x] === app.common.stateOff
         ? app.common.stateOn
         : app.common.stateOff;
     pointermove(e);
@@ -131,8 +133,8 @@
     prev.x = cur.x;
     prev.y = cur.y;
 
-    if (states[cur.y][cur.x] !== drawingState) {
-      states[cur.y][cur.x] = drawingState;
+    if (app.common.states[cur.y][cur.x] !== drawingState) {
+      app.common.states[cur.y][cur.x] = drawingState;
       update(e);
     }
   }
@@ -148,7 +150,7 @@
     elems.svg.setAttribute('width', blockSize * maxW);
     elems.svg.setAttribute('height', blockSize * maxH);
 
-    const g = app.common.createStatesG(states, blockSize);
+    const g = app.common.createStatesG(app.common.states, blockSize);
     elems.svg.appendChild(g);
   }
 
@@ -159,7 +161,7 @@
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
-        if (states[y][x] === app.common.stateOn) {
+        if (app.common.states[y][x] === app.common.stateOn) {
           numOrange++;
         }
       }
@@ -183,18 +185,20 @@
       for (let y = y0; y < maxH; y++) {
         const x00 = y === y0 ? x0 : 0;
         for (let x = x00; x < maxW; x++) {
-          if (states[y][x] !== app.common.stateOn) continue;
+          if (app.common.states[y][x] !== app.common.stateOn) continue;
 
           if (x !== maxW - 1) {
             // 横置き
-            if (states[y][x + 1] === app.common.stateOn) {
+            if (app.common.states[y][x + 1] === app.common.stateOn) {
               numDomino++;
               if (numDomino === numDominoMax) {
                 ans++;
               } else {
-                states[y][x] = states[y][x + 1] = app.common.stateOff;
+                app.common.states[y][x] = app.common.states[y][x + 1] =
+                  app.common.stateOff;
                 dfs(y, x + 2);
-                states[y][x] = states[y][x + 1] = app.common.stateOn;
+                app.common.states[y][x] = app.common.states[y][x + 1] =
+                  app.common.stateOn;
               }
               numDomino--;
             }
@@ -202,14 +206,16 @@
 
           if (y !== maxH - 1) {
             // 縦置き
-            if (states[y + 1][x] === app.common.stateOn) {
+            if (app.common.states[y + 1][x] === app.common.stateOn) {
               numDomino++;
               if (numDomino === numDominoMax) {
                 ans++;
               } else {
-                states[y][x] = states[y + 1][x] = app.common.stateOff;
+                app.common.states[y][x] = app.common.states[y + 1][x] =
+                  app.common.stateOff;
                 dfs(y, x + 1);
-                states[y][x] = states[y + 1][x] = app.common.stateOn;
+                app.common.states[y][x] = app.common.states[y + 1][x] =
+                  app.common.stateOn;
               }
               numDomino--;
             }
@@ -226,6 +232,6 @@
     elems.num.innerText = `${numOrange}マス`;
     elems.result.innerText = `${result}通り`;
 
-    app.savedata.saveCount(result, states);
+    app.savedata.saveCount(result, app.common.states);
   }
 })();

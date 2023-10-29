@@ -18,6 +18,7 @@
       button: 'button-collections',
       dialogSvg: 'dialog-collections-svg',
       dialog: 'dialog-collections',
+      dialogDiv: 'dialog-collections-div',
       close: 'dialog-collections-close',
       prev: 'button-collections-prev',
       next: 'button-collections-next',

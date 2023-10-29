@@ -12,7 +12,10 @@
 
   const svg = app.svg;
 
+  const states = [];
+
   const common = {
+    states,
     stateOff,
     stateOn,
     createStatesG,
