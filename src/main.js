@@ -36,6 +36,10 @@
       pointerdownEventName,
       app.dialog.collections.show
     );
+    elems.collections.dialog.addEventListener(
+      pointerdownEventName,
+      app.dialog.collections.close
+    );
     elems.collections.close.addEventListener(
       pointerdownEventName,
       app.dialog.collections.close
