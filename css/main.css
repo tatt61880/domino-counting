@@ -99,3 +99,8 @@ g {
 .hide {
   display: none;
 }
+
+#app-icon {
+  width: 40px;
+  height: 40px;
+}
