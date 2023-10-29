@@ -83,17 +83,6 @@
       const y = Math.floor((i % NUM_PER_PAGE) / COLS) * HEIGHT;
       g.setAttribute('transform', `translate(${x},${y})`);
 
-      {
-        const text = app.svg.createText(1, {
-          x: WIDTH / 2,
-          y: HEIGHT - 9,
-          text: count,
-          fill: 'black',
-        });
-        text.setAttribute('font-size', '16px');
-        g.appendChild(text);
-      }
-
       const rect = app.svg.createRect(1, {
         x: 1,
         y: 1,
@@ -108,7 +97,18 @@
       g.appendChild(rect);
 
       const sss = app.savedata.getCount(count);
-      if (sss !== undefined) {
+      if (sss === undefined) {
+        const titleColor = '#ff3333';
+        const text = app.svg.createText(1, {
+          x: WIDTH / 2,
+          y: HEIGHT / 2,
+          text: '?',
+          fill: titleColor,
+        });
+        text.setAttribute('font-size', '32px');
+        g.appendChild(text);
+        rect.setAttribute('fill', '#ffeeee');
+      } else {
         const states = [];
         for (let ss of sss) {
           const state = [];
@@ -124,6 +124,17 @@
         const gStates = app.common.createStatesG(states, 10);
         gStates.setAttribute('transform', `translate(5,5)`);
         g.appendChild(gStates);
+      }
+
+      {
+        const text = app.svg.createText(1, {
+          x: WIDTH / 2,
+          y: HEIGHT - 9,
+          text: count,
+          fill: '#000000',
+        });
+        text.setAttribute('font-size', '16px');
+        g.appendChild(text);
       }
     }
   }
