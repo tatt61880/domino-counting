@@ -17,6 +17,7 @@
 
     collections: {
       button: 'button-collections',
+      buttonText: 'button-collections-text',
       dialog: 'dialog-collections',
       num: 'collections-num',
       dialogSvg: 'dialog-collections-svg',

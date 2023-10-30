@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.30f';
+  const VERSION_TEXT = 'v2023.10.31';
 
   const app = window.app;
   Object.freeze(app);
@@ -9,8 +9,6 @@
   let drawingFlag = false;
   let drawingState = null;
   const prev = { x: null, y: null };
-
-  let clipMode = false;
 
   document.addEventListener('DOMContentLoaded', onloadApp);
   return;
@@ -22,53 +20,52 @@
     const queryStrs = location.href.split('?')[1];
     if (queryStrs !== undefined) {
       for (const queryStr of queryStrs.split('&')) {
-        if (queryStr === 'clip') {
-          clipMode = true;
+        if (queryStr === 'backup') {
+          elems.collections.button.addEventListener(
+            'click',
+            copySavedataToClipboard
+          );
+          elems.collections.buttonText.innerHTML = 'バックアップ';
+          elems.svg.classList.add('hide');
+          return;
         }
       }
     }
 
-    const pointerdownEventName =
+    const downEvent =
       window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
+    const moveEvent =
+      window.ontouchmove !== undefined ? 'touchmove' : 'mousemove';
+    const upEvent = window.ontouchend !== undefined ? 'touchend' : 'mouseup';
 
     elems.collections.button.addEventListener(
-      pointerdownEventName,
-      !clipMode ? app.dialog.collections.show : copySavedataToClipboard
+      downEvent,
+      app.dialog.collections.show
     );
     elems.collections.dialog.addEventListener(
-      pointerdownEventName,
+      downEvent,
       app.dialog.collections.close
     );
-    elems.collections.dialogDiv.addEventListener(pointerdownEventName, (e) =>
+    elems.collections.dialogDiv.addEventListener(downEvent, (e) =>
       e.stopPropagation()
     );
     elems.collections.close.addEventListener(
-      pointerdownEventName,
+      downEvent,
       app.dialog.collections.close
     );
     elems.collections.prev.addEventListener(
-      pointerdownEventName,
+      downEvent,
       app.dialog.collections.prevPage
     );
     elems.collections.next.addEventListener(
-      pointerdownEventName,
+      downEvent,
       app.dialog.collections.nextPage
     );
 
-    elems.svg.addEventListener(pointerdownEventName, pointerdown);
-
-    if (window.ontouchmove === undefined) {
-      elems.svg.addEventListener('mousemove', pointermove);
-    } else {
-      elems.svg.addEventListener('touchmove', pointermove);
-    }
-    if (window.ontouchend === undefined) {
-      elems.svg.addEventListener('mouseup', pointerup);
-      document.addEventListener('mouseup', pointerup);
-    } else {
-      elems.svg.addEventListener('touchend', pointerup);
-      document.addEventListener('touchend', pointerup);
-    }
+    elems.svg.addEventListener(downEvent, pointerdown);
+    elems.svg.addEventListener(moveEvent, pointermove);
+    elems.svg.addEventListener(upEvent, pointerup);
+    document.addEventListener(upEvent, pointerup);
 
     update();
   }
