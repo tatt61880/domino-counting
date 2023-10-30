@@ -116,6 +116,7 @@
     app.savedata.saveCount(result, app.common.states);
   }
 
+  // 盤面図形を作成
   function createStatesG(states, blockSize) {
     const g = svg.createG();
     const lineColor = '#aaaaaa';
@@ -123,7 +124,8 @@
     const wallColor = 'none';
     const wallStroke = 'none';
 
-    const floorColor = '#ffbb88';
+    const floorColor1 = '#ffbb88';
+    const floorColor2 = '#ffaa88';
     const floorStroke = '#fd7e00';
 
     const maxH = states.length;
@@ -178,6 +180,7 @@
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
+        const floorColor = (x + y) % 2 === 0 ? floorColor1 : floorColor2;
         const fill = states[y][x] !== stateOn ? wallColor : floorColor;
         const stroke = states[y][x] !== stateOn ? wallStroke : floorStroke;
         const rect = svg.createRect(blockSize, {
