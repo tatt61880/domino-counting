@@ -63,6 +63,10 @@
       return Object.keys(this.data.counts).length;
     }
 
+    getData() {
+      return JSON.stringify(this.data);
+    }
+
     saveCount(count, states) {
       elems.notice.innerHTML = '<br>';
       const prev = this.data.counts[count];

@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.10.30e';
+  const VERSION_TEXT = 'v2023.10.30f';
 
   const app = window.app;
   Object.freeze(app);
@@ -10,6 +10,8 @@
   let drawingState = null;
   const prev = { x: null, y: null };
 
+  let clipMode = false;
+
   document.addEventListener('DOMContentLoaded', onloadApp);
   return;
   // ==========================================================================
@@ -17,12 +19,21 @@
   function onloadApp() {
     elems.version.textContent = VERSION_TEXT;
 
+    const queryStrs = location.href.split('?')[1];
+    if (queryStrs !== undefined) {
+      for (const queryStr of queryStrs.split('&')) {
+        if (queryStr === 'clip') {
+          clipMode = true;
+        }
+      }
+    }
+
     const pointerdownEventName =
       window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
 
     elems.collections.button.addEventListener(
       pointerdownEventName,
-      app.dialog.collections.show
+      !clipMode ? app.dialog.collections.show : copySavedataToClipboard
     );
     elems.collections.dialog.addEventListener(
       pointerdownEventName,
@@ -44,11 +55,8 @@
       app.dialog.collections.nextPage
     );
 
-    if (window.ontouchstart === undefined) {
-      elems.svg.addEventListener('mousedown', pointerdown);
-    } else {
-      elems.svg.addEventListener('touchstart', pointerdown);
-    }
+    elems.svg.addEventListener(pointerdownEventName, pointerdown);
+
     if (window.ontouchmove === undefined) {
       elems.svg.addEventListener('mousemove', pointermove);
     } else {
@@ -149,5 +157,17 @@
 
     const g = app.common.createStatesG(app.common.states, app.common.blockSize);
     elems.svg.appendChild(g);
+  }
+
+  function copySavedataToClipboard() {
+    const text = app.savedata.getData();
+    navigator.clipboard.writeText(text).then(
+      () => {
+        alert('【クリップボードにコピーしました】\n' + text);
+      },
+      () => {
+        alert('クリップボードへのコピーに失敗しました。');
+      }
+    );
   }
 })();
