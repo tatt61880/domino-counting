@@ -16,8 +16,9 @@
 
     collections: {
       button: 'button-collections',
-      dialogSvg: 'dialog-collections-svg',
       dialog: 'dialog-collections',
+      num: 'collections-num',
+      dialogSvg: 'dialog-collections-svg',
       dialogDiv: 'dialog-collections-div',
       close: 'dialog-collections-close',
       prev: 'button-collections-prev',

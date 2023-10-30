@@ -58,6 +58,10 @@
       return this.data.counts[count];
     }
 
+    getNum() {
+      return Object.keys(this.data.counts).length;
+    }
+
     saveCount(count, states) {
       const prev = this.data.counts[count];
       const current = this.#statesToArray(states);

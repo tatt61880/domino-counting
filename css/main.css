@@ -104,3 +104,8 @@ g {
   width: 40px;
   height: 40px;
 }
+
+#collections-num {
+  margin: 0 0 15px;
+  font-size: 1.5rem;
+}

@@ -35,6 +35,8 @@
   let page = 0;
 
   function showCollectionsDialog() {
+    const num = app.savedata.getNum();
+    elems.collections.num.innerText = `コレクション数: ${num}`;
     updateCollectionsDialog();
     elems.collections.dialog.showModal();
   }
