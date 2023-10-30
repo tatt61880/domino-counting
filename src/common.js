@@ -9,7 +9,7 @@
 
   const stateOff = 0;
   const stateOn = 1;
-  const blockSize = 50;
+  const blockSize = 60;
 
   const svg = app.svg;
 
