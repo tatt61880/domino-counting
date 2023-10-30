@@ -119,20 +119,14 @@
   // 盤面図形を作成
   function createStatesG(states, blockSize) {
     const g = svg.createG();
-    const lineColor = '#aaaaaa';
+    const lineColor = '#888888';
 
-    const wallColor = 'none';
-    const wallStroke = 'none';
+    const emptyColor = 'none';
+    const emptyStroke = 'none';
 
     const floorColor1 = '#ffbb88';
     const floorColor2 = '#ffaa88';
     const floorStroke = '#fd7e00';
-
-    const maxH = states.length;
-    let maxW = 0;
-    for (const state of states) {
-      maxW = Math.max(maxW, state.length);
-    }
 
     {
       const fill = 'white';
@@ -179,10 +173,12 @@
     }
 
     for (let y = 0; y < maxH; y++) {
+      if (states[y] === undefined) break;
       for (let x = 0; x < maxW; x++) {
+        if (states[y][x] === undefined) break;
         const floorColor = (x + y) % 2 === 0 ? floorColor1 : floorColor2;
-        const fill = states[y][x] !== stateOn ? wallColor : floorColor;
-        const stroke = states[y][x] !== stateOn ? wallStroke : floorStroke;
+        const fill = states[y][x] !== stateOn ? emptyColor : floorColor;
+        const stroke = states[y][x] !== stateOn ? emptyStroke : floorStroke;
         const rect = svg.createRect(blockSize, {
           x,
           y,
