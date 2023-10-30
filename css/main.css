@@ -109,3 +109,8 @@ g {
   margin: 0 0 15px;
   font-size: 1.5rem;
 }
+
+#notice {
+  font-size: 1.5rem;
+  color: #ee0000;
+}

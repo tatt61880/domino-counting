@@ -13,6 +13,7 @@
     num: 'num',
     svg: 'svg',
     result: 'result',
+    notice: 'notice',
 
     collections: {
       button: 'button-collections',
