@@ -115,3 +115,12 @@ g {
   font-size: 1.5rem;
   color: #ee0000;
 }
+
+#dialog-collections {
+  width: 490px;
+  padding: 10px 0 0;
+}
+
+#dialog-collections-div {
+  padding: 5px;
+}
