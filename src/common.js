@@ -38,29 +38,37 @@
   function dominoCount() {
     let ans = 0;
     let numDomino = 0;
-    let numOrange = 0;
+    let numOn = 0;
+    let numOdd = 0;
+    let numEven = 0;
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
-        if (app.common.states[y][x] === app.common.stateOn) {
-          numOrange++;
+        if (app.common.states[y][x] !== app.common.stateOn) continue;
+
+        numOn++;
+
+        if ((x + y) % 2 === 0) {
+          numEven++;
+        } else {
+          numOdd++;
         }
       }
     }
 
-    if (numOrange % 2 !== 0) {
-      return [0, numOrange];
+    if (numEven !== numOdd) {
+      return [0, numOn];
     }
 
-    if (numOrange === 0) {
-      return [1, numOrange];
+    if (numOn === 0) {
+      return [1, numOn];
     }
 
-    const numDominoMax = numOrange / 2;
+    const numDominoMax = numOn / 2;
 
     dfs(0, 0);
 
-    return [ans, numOrange];
+    return [ans, numOn];
 
     function dfs(y0, x0) {
       for (let y = y0; y < maxH; y++) {
@@ -108,9 +116,9 @@
   }
 
   function updateResult() {
-    const [result, numOrange] = dominoCount();
+    const [result, numOn] = dominoCount();
 
-    app.elems.num.innerText = `${numOrange}マス`;
+    app.elems.num.innerText = `${numOn}マス`;
     app.elems.result.innerText = `${result}通り`;
 
     app.savedata.saveCount(result, app.common.states);
