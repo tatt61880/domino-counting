@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.11.01';
+  const VERSION_TEXT = 'v2023.11.02';
 
   const app = window.app;
   Object.freeze(app);
@@ -60,6 +60,10 @@
     elems.collections.next.addEventListener(
       downEvent,
       app.dialog.collections.nextPage
+    );
+    elems.collections.pagesize.addEventListener(
+      downEvent,
+      app.dialog.collections.togglePagesize
     );
 
     elems.svg.addEventListener(downEvent, pointerdown);

@@ -27,12 +27,26 @@
       prevPage: gotoPrevLevelPage,
       nextPage: gotoNextLevelPage,
       close: closeCollectionsDialog,
+      togglePagesize,
     },
   };
 
   // --------------------------------------------------------------------------
 
-  let page = 0;
+  let page20 = 0;
+  const pagesize20 = Symbol('pagesize20');
+  const pagesize100 = Symbol('pagesize100');
+  let pagesize = pagesize20;
+
+  function togglePagesize() {
+    if (pagesize === pagesize20) {
+      pagesize = pagesize100;
+    } else {
+      pagesize = pagesize20;
+      page20 = Math.floor(page20 / 5) * 5;
+    }
+    updateCollectionsDialog();
+  }
 
   function showCollectionsDialog() {
     const num = app.savedata.getNum();
@@ -43,14 +57,14 @@
 
   function gotoPrevLevelPage() {
     if (!elems.collections.prev.classList.contains('hide')) {
-      page -= 1;
+      page20 -= pagesize === pagesize20 ? 1 : 5;
       updateCollectionsDialog();
     }
   }
 
   function gotoNextLevelPage() {
     if (!elems.collections.next.classList.contains('hide')) {
-      page += 1;
+      page20 += pagesize === pagesize20 ? 1 : 5;
       updateCollectionsDialog();
     }
   }
@@ -59,6 +73,7 @@
     window.getSelection().removeAllRanges();
 
     elems.collections.dialogSvg.innerHTML = '';
+    const page = pagesize === pagesize20 ? page20 : Math.floor(page20 / 5);
 
     if (page === 0) {
       elems.collections.prev.classList.add('hide');
@@ -66,18 +81,22 @@
       elems.collections.prev.classList.remove('hide');
     }
 
-    const COLS = 5;
-    const ROWS = 4;
+    const COLS = pagesize === pagesize20 ? 5 : 10;
+    const ROWS = pagesize === pagesize20 ? 4 : 10;
     const NUM_PER_PAGE = COLS * ROWS;
 
-    const HEIGHT = 90;
-    const WIDTH = 90;
+    const HEIGHT = pagesize === pagesize20 ? 90 : 36;
+    const WIDTH = pagesize === pagesize20 ? 90 : 45;
 
+    elems.collections.dialogSvg.setAttribute('width', WIDTH * COLS);
     elems.collections.dialogSvg.setAttribute('height', HEIGHT * ROWS);
-    elems.collections.dialogSvg.setAttribute('width', HEIGHT * COLS);
 
     for (let i = page * NUM_PER_PAGE; i < (page + 1) * NUM_PER_PAGE; i++) {
       const count = i + 1;
+      addCell(count, i);
+    }
+
+    function addCell(count, i) {
       const g = svg.createG();
       elems.collections.dialogSvg.appendChild(g);
 
@@ -100,15 +119,17 @@
 
       const sss = app.savedata.getCount(count);
       if (sss === undefined) {
-        const titleColor = '#ff3333';
-        const text = app.svg.createText(1, {
-          x: WIDTH / 2,
-          y: HEIGHT / 2,
-          text: '?',
-          fill: titleColor,
-        });
-        text.setAttribute('font-size', '32px');
-        g.appendChild(text);
+        if (pagesize === pagesize20) {
+          const titleColor = '#ff3333';
+          const text = app.svg.createText(1, {
+            x: WIDTH / 2,
+            y: HEIGHT / 2,
+            text: '?',
+            fill: titleColor,
+          });
+          text.setAttribute('font-size', '32px');
+          g.appendChild(text);
+        }
         rect.setAttribute('fill', '#ffeeee');
       } else {
         const states = [];
@@ -154,13 +175,18 @@
       }
 
       {
+        const y = pagesize === pagesize20 ? HEIGHT - 9 : HEIGHT / 2;
         const text = app.svg.createText(1, {
           x: WIDTH / 2,
-          y: HEIGHT - 9,
+          y,
           text: count,
           fill: '#000000',
         });
-        text.setAttribute('font-size', '16px');
+        if (pagesize === pagesize20) {
+          text.setAttribute('font-size', '16px');
+        } else {
+          text.setAttribute('font-size', '12px');
+        }
         g.appendChild(text);
       }
     }

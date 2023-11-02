@@ -25,6 +25,7 @@
       close: 'dialog-collections-close',
       prev: 'button-collections-prev',
       next: 'button-collections-next',
+      pagesize: 'button-toggle-pagesize',
     },
   });
 

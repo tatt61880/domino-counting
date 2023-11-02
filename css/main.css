@@ -82,6 +82,10 @@ g {
   pointer-events: none;
 }
 
+text {
+  pointer-events: none;
+}
+
 #result {
   margin: 10px 0;
   font-size: 2rem;
