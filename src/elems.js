@@ -1,12 +1,10 @@
 (function () {
   'use strict';
   const isBrowser = typeof window !== 'undefined';
+  if (!isBrowser) return;
 
-  let app = {};
-  if (isBrowser) {
-    app = window.app;
-    if (app?.Elems === undefined) console.error('app.Elems is undefined.');
-  }
+  const app = window.app;
+  console.assert(app?.Elems !== undefined);
 
   const elems = new app.Elems({
     version: 'version',
@@ -29,8 +27,6 @@
     },
   });
 
-  if (isBrowser) {
-    window.app = window.app || {};
-    window.app.elems = elems;
-  }
+  window.app = window.app || {};
+  window.app.elems = elems;
 })();

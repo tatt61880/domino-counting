@@ -3,9 +3,7 @@
   const isBrowser = typeof window !== 'undefined';
 
   const app = window.app;
-  if (app.svg === undefined) {
-    console.error('app.svg is undefined.');
-  }
+  console.assert(app.svg !== undefined);
 
   const stateOff = 0;
   const stateOn = 1;

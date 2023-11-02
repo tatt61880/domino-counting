@@ -1,22 +1,12 @@
 (function () {
   'use strict';
   const isBrowser = typeof window !== 'undefined';
-
-  if (!isBrowser) {
-    console.error('Error: dialog.js is for browser.');
-    return;
-  }
+  if (!isBrowser) return;
 
   const app = window.app;
-  if (app.elems === undefined) {
-    console.error('app.elems is undefined.');
-  }
-  if (app.savedata === undefined) {
-    console.error('app.savedata is undefined.');
-  }
-  if (app.svg === undefined) {
-    console.error('app.svg is undefined.');
-  }
+  console.assert(app.elems !== undefined);
+  console.assert(app.savedata !== undefined);
+  console.assert(app.svg !== undefined);
 
   const elems = app.elems;
   const svg = app.svg;
@@ -24,10 +14,10 @@
   const dialog = {
     collections: {
       show: showCollectionsDialog,
-      prevPage: gotoPrevLevelPage,
-      nextPage: gotoNextLevelPage,
+      prevPage: gotoPrevCollectionsPage,
+      nextPage: gotoNextCollectionsPage,
       close: closeCollectionsDialog,
-      togglePagesize,
+      togglePagesize: toggleCollectionsPagesize,
     },
   };
 
@@ -38,7 +28,7 @@
   const pagesize100 = Symbol('pagesize100');
   let pagesize = pagesize20;
 
-  function togglePagesize() {
+  function toggleCollectionsPagesize() {
     if (pagesize === pagesize20) {
       pagesize = pagesize100;
     } else {
@@ -55,14 +45,14 @@
     elems.collections.dialog.showModal();
   }
 
-  function gotoPrevLevelPage() {
+  function gotoPrevCollectionsPage() {
     if (!elems.collections.prev.classList.contains('hide')) {
       page20 -= pagesize === pagesize20 ? 1 : 5;
       updateCollectionsDialog();
     }
   }
 
-  function gotoNextLevelPage() {
+  function gotoNextCollectionsPage() {
     if (!elems.collections.next.classList.contains('hide')) {
       page20 += pagesize === pagesize20 ? 1 : 5;
       updateCollectionsDialog();
@@ -197,8 +187,6 @@
     elems.collections.dialog.close();
   }
 
-  if (isBrowser) {
-    window.app = window.app || {};
-    window.app.dialog = dialog;
-  }
+  window.app = window.app || {};
+  window.app.dialog = dialog;
 })();

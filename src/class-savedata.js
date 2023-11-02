@@ -3,6 +3,7 @@
   const isBrowser = typeof window !== 'undefined';
   if (!isBrowser) return;
   if (window.app?.savedata) return;
+
   const elems = window.app.elems;
 
   const LOCAL_STORAGE_KEY = 'tatt61880-domino-counting';
@@ -96,9 +97,7 @@
     }
   }
 
-  if (isBrowser) {
-    window.app = window.app || {};
-    const savedata = new Savedata();
-    window.app.savedata = savedata;
-  }
+  window.app = window.app || {};
+  const savedata = new Savedata();
+  window.app.savedata = savedata;
 })();
