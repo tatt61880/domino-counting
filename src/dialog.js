@@ -175,7 +175,7 @@
       }
 
       {
-        const y = pagesize === pagesize20 ? HEIGHT - 9 : HEIGHT / 2;
+        const y = pagesize === pagesize20 ? HEIGHT - 9 : HEIGHT / 2 + 2;
         const text = app.svg.createText(1, {
           x: WIDTH / 2,
           y,
@@ -186,6 +186,7 @@
           text.setAttribute('font-size', '16px');
         } else {
           text.setAttribute('font-size', '12px');
+          text.setAttribute('opacity', '0.5');
         }
         g.appendChild(text);
       }
