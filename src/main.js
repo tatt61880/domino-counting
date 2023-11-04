@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.11.02c';
+  const VERSION_TEXT = 'v2023.11.04';
 
   const app = window.app;
   Object.freeze(app);
@@ -162,9 +162,12 @@
 
   function copySavedataToClipboard() {
     const text = app.savedata.getData();
+    const num = app.savedata.getNum();
     navigator.clipboard.writeText(text).then(
       () => {
-        alert('【クリップボードにコピーしました】\n' + text);
+        alert(
+          `【「コレクション数: ${num}」の全データをクリップボードにコピーしました】\n${text}`
+        );
       },
       () => {
         alert('クリップボードへのコピーに失敗しました。');
