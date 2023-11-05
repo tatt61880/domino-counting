@@ -72,10 +72,21 @@ footer {
   vertical-align: middle;
 }
 
-#svg {
+#main-svg {
   margin: 5px;
   cursor: pointer;
   border: 2px solid black;
+}
+
+.block-svg {
+  width: 20px;
+  height: 20px;
+}
+
+#num-even,
+#num-odd {
+  margin-right: 10px;
+  font-size: 24px;
 }
 
 g {

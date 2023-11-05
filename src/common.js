@@ -36,15 +36,12 @@
   function dominoCount() {
     let ans = 0;
     let numDomino = 0;
-    let numOn = 0;
     let numOdd = 0;
     let numEven = 0;
 
     for (let y = 0; y < maxH; y++) {
       for (let x = 0; x < maxW; x++) {
         if (app.common.states[y][x] !== app.common.stateOn) continue;
-
-        numOn++;
 
         if ((x + y) % 2 === 0) {
           numEven++;
@@ -55,18 +52,18 @@
     }
 
     if (numEven !== numOdd) {
-      return [0, numOn];
+      return [0, numEven, numOdd];
     }
 
-    if (numOn === 0) {
-      return [1, numOn];
+    if (numEven === 0) {
+      return [1, numEven, numOdd];
     }
 
-    const numDominoMax = numOn / 2;
+    const numDominoMax = numEven;
 
     dfs(0, 0);
 
-    return [ans, numOn];
+    return [ans, numEven, numOdd];
 
     function dfs(y0, x0) {
       for (let y = y0; y < maxH; y++) {
@@ -114,9 +111,10 @@
   }
 
   function updateResult() {
-    const [result, numOn] = dominoCount();
+    const [result, numEven, numOdd] = dominoCount();
 
-    app.elems.num.innerText = `${numOn}マス`;
+    app.elems.numEven.innerText = `×${numEven}`;
+    app.elems.numOdd.innerText = `×${numOdd}`;
     app.elems.result.innerText = `${result}通り`;
 
     app.savedata.saveCollectionState(result, app.common.states);
@@ -130,8 +128,8 @@
     const emptyColor = 'none';
     const emptyStroke = 'none';
 
-    const floorColor1 = '#ffbb88';
-    const floorColor2 = '#ffaa88';
+    const floorColorEven = '#ffbb88';
+    const floorColorOdd = '#ffaa88';
     const floorStroke = '#fd7e00';
 
     {
@@ -182,7 +180,7 @@
       if (states[y] === undefined) break;
       for (let x = 0; x < maxW; x++) {
         if (states[y][x] === undefined) break;
-        const floorColor = (x + y) % 2 === 0 ? floorColor1 : floorColor2;
+        const floorColor = (x + y) % 2 === 0 ? floorColorEven : floorColorOdd;
         const fill = states[y][x] !== stateOn ? emptyColor : floorColor;
         const stroke = states[y][x] !== stateOn ? emptyStroke : floorStroke;
         const rect = svg.createRect(blockSize, {

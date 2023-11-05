@@ -8,8 +8,9 @@
 
   const elems = new app.Elems({
     version: 'version',
-    num: 'num',
-    svg: 'svg',
+    numOdd: 'num-odd',
+    numEven: 'num-even',
+    svg: 'main-svg',
     result: 'result',
     notice: 'notice',
 
