@@ -39,7 +39,7 @@
   }
 
   function showCollectionsDialog() {
-    const num = app.savedata.getNum();
+    const num = app.savedata.getCollectionNum();
     elems.collections.num.innerText = `コレクション数: ${num}`;
     updateCollectionsDialog();
     elems.collections.dialog.showModal();
@@ -107,7 +107,7 @@
       rect.setAttribute('ry', '5');
       g.appendChild(rect);
 
-      const sss = app.savedata.getCount(count);
+      const sss = app.savedata.getCollectionState(count);
       if (sss === undefined) {
         if (pagesize === pagesize20) {
           const titleColor = '#ff3333';

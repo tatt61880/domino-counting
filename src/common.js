@@ -119,7 +119,7 @@
     app.elems.num.innerText = `${numOn}マス`;
     app.elems.result.innerText = `${result}通り`;
 
-    app.savedata.saveCount(result, app.common.states);
+    app.savedata.saveCollectionState(result, app.common.states);
   }
 
   // 盤面図形を作成

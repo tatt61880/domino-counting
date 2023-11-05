@@ -56,19 +56,19 @@
       return res;
     }
 
-    getCount(count) {
-      return this.data.counts[count];
-    }
-
-    getNum() {
-      return Object.keys(this.data.counts).length;
-    }
-
-    getData() {
+    getSavedataString() {
       return JSON.stringify(this.data);
     }
 
-    saveCount(count, states) {
+    getCollectionNum() {
+      return Object.keys(this.data.counts).length;
+    }
+
+    getCollectionState(count) {
+      return this.data.counts[count];
+    }
+
+    saveCollectionState(count, states) {
       elems.notice.innerHTML = '<br>';
       const prev = this.data.counts[count];
       const current = this.#statesToArray(states);

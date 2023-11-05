@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v2023.11.04';
+  const VERSION_TEXT = 'v2023.11.04b';
 
   const app = window.app;
   Object.freeze(app);
@@ -161,8 +161,8 @@
   }
 
   function copySavedataToClipboard() {
-    const text = app.savedata.getData();
-    const num = app.savedata.getNum();
+    const text = app.savedata.getSavedataString();
+    const num = app.savedata.getCollectionNum();
     navigator.clipboard.writeText(text).then(
       () => {
         alert(
