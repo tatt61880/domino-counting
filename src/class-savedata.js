@@ -4,7 +4,8 @@
   if (!isBrowser) return;
   if (window.app?.savedata) return;
 
-  const elems = window.app.elems;
+  const app = window.app;
+  const elems = app.elems;
 
   const LOCAL_STORAGE_KEY = 'tatt61880-domino-counting';
 
@@ -69,6 +70,9 @@
     }
 
     saveCollectionState(count, states) {
+      if (app.common.maxW !== app.common.defaultW) return;
+      if (app.common.maxH !== app.common.defaultH) return;
+
       elems.notice.innerHTML = '<br>';
       const prev = this.data.counts[count];
       const current = this.#statesToArray(states);

@@ -11,9 +11,30 @@
 
   const svg = app.svg;
 
+  const option = {};
+
+  const queryStrs = location.href.split('?')[1];
+  if (queryStrs !== undefined) {
+    for (const queryStr of queryStrs.split('&')) {
+      const paramArray = queryStr.split('=');
+      const paramName = paramArray[0];
+      const paramVal = paramArray[1];
+      switch (paramName) {
+        case 'w':
+          option.w = Number(paramVal);
+          break;
+        case 'h':
+          option.h = Number(paramVal);
+          break;
+      }
+    }
+  }
+
+  const defaultW = 7;
+  const defaultH = 6;
   const states = [];
-  const maxW = 7;
-  const maxH = 6;
+  const maxW = option.w ?? defaultW;
+  const maxH = option.h ?? defaultH;
 
   for (let y = 0; y < maxH; ++y) {
     states[y] = [];
@@ -31,6 +52,8 @@
     updateResult,
     maxW,
     maxH,
+    defaultW,
+    defaultH,
   };
 
   function dominoCount() {
