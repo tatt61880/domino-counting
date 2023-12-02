@@ -7,7 +7,6 @@
 
   const stateOff = 0;
   const stateOn = 1;
-  const blockSize = 60;
 
   const svg = app.svg;
 
@@ -26,6 +25,9 @@
         case 'h':
           option.h = Number(paramVal);
           break;
+        case 's':
+          option.s = paramVal;
+          break;
       }
     }
   }
@@ -35,11 +37,49 @@
   const states = [];
   const maxW = option.w ?? defaultW;
   const maxH = option.h ?? defaultH;
+  const blockSize = maxW <= defaultW ? 60 : 30;
 
   for (let y = 0; y < maxH; ++y) {
     states[y] = [];
     for (let x = 0; x < maxW; ++x) {
       states[y][x] = stateOn;
+    }
+  }
+
+  if (option.s) {
+    for (let y = 0; y < maxH; ++y) {
+      states[y] = [];
+      for (let x = 0; x < maxW; ++x) {
+        states[y][x] = stateOff;
+      }
+    }
+
+    let y = 0;
+    let x = 0;
+    for (const c of stateCharGenerator(option.s)) {
+      if (c === '-') {
+        y++;
+        if (y >= maxH) break;
+        x = 0;
+      } else {
+        if (x >= maxW) continue;
+        states[y][x] = c === '1' ? stateOn : stateOff;
+        console.log(c);
+        x++;
+      }
+    }
+  }
+
+  function* stateCharGenerator(stateStr) {
+    for (let i = 0; i < stateStr.length; ++i) {
+      let c = stateStr[i];
+      if (c === '(') {
+        c = '';
+        while (i !== stateStr.length - 1 && stateStr[++i] !== ')') {
+          c += stateStr[i];
+        }
+      }
+      yield c;
     }
   }
 
