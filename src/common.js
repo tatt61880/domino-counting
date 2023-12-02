@@ -37,7 +37,14 @@
   const states = [];
   const maxX = option.w ?? defaultMaxX;
   const maxY = option.h ?? defaultMaxY;
-  const blockSize = maxX <= defaultMaxX ? 60 : 30;
+  const blockSize = (() => {
+    let res = 60;
+    if (maxX > defaultMaxX) {
+      res = 460 / maxX;
+      if (res < 30) res = 30;
+    }
+    return res;
+  })();
 
   for (let y = 0; y < maxY; ++y) {
     states[y] = [];
