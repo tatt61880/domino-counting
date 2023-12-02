@@ -136,7 +136,7 @@
 
         const gStates = app.common.createStatesG(
           states,
-          (WIDTH - 14) / app.common.maxW
+          (WIDTH - 14) / app.common.maxX
         );
         gStates.setAttribute('transform', `translate(7,5)`);
         g.appendChild(gStates);

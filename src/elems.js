@@ -12,6 +12,7 @@
     numEven: 'num-even',
     svg: 'main-svg',
     result: 'result',
+    collectionButtonDiv: 'collection-button-div',
     notice: 'notice',
 
     collections: {

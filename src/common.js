@@ -32,24 +32,24 @@
     }
   }
 
-  const defaultW = 7;
-  const defaultH = 6;
+  const defaultMaxX = 7;
+  const defaultMaxY = 6;
   const states = [];
-  const maxW = option.w ?? defaultW;
-  const maxH = option.h ?? defaultH;
-  const blockSize = maxW <= defaultW ? 60 : 30;
+  const maxX = option.w ?? defaultMaxX;
+  const maxY = option.h ?? defaultMaxY;
+  const blockSize = maxX <= defaultMaxX ? 60 : 30;
 
-  for (let y = 0; y < maxH; ++y) {
+  for (let y = 0; y < maxY; ++y) {
     states[y] = [];
-    for (let x = 0; x < maxW; ++x) {
+    for (let x = 0; x < maxX; ++x) {
       states[y][x] = stateOn;
     }
   }
 
   if (option.s) {
-    for (let y = 0; y < maxH; ++y) {
+    for (let y = 0; y < maxY; ++y) {
       states[y] = [];
-      for (let x = 0; x < maxW; ++x) {
+      for (let x = 0; x < maxX; ++x) {
         states[y][x] = stateOff;
       }
     }
@@ -59,10 +59,10 @@
     for (const c of stateCharGenerator(option.s)) {
       if (c === '-') {
         y++;
-        if (y >= maxH) break;
+        if (y >= maxY) break;
         x = 0;
       } else {
-        if (x >= maxW) continue;
+        if (x >= maxX) continue;
         states[y][x] = c === '1' ? stateOn : stateOff;
         console.log(c);
         x++;
@@ -90,10 +90,10 @@
     blockSize,
     createStatesG,
     updateResult,
-    maxW,
-    maxH,
-    defaultW,
-    defaultH,
+    maxX,
+    maxY,
+    defaultMaxX,
+    defaultMaxY,
   };
 
   function dominoCount() {
@@ -102,8 +102,8 @@
     let numOdd = 0;
     let numEven = 0;
 
-    for (let y = 0; y < maxH; y++) {
-      for (let x = 0; x < maxW; x++) {
+    for (let y = 0; y < maxY; y++) {
+      for (let x = 0; x < maxX; x++) {
         if (app.common.states[y][x] !== app.common.stateOn) continue;
 
         if ((x + y) % 2 === 0) {
@@ -129,12 +129,12 @@
     return [ans, numEven, numOdd];
 
     function dfs(y0, x0) {
-      for (let y = y0; y < maxH; y++) {
+      for (let y = y0; y < maxY; y++) {
         const x00 = y === y0 ? x0 : 0;
-        for (let x = x00; x < maxW; x++) {
+        for (let x = x00; x < maxX; x++) {
           if (app.common.states[y][x] !== app.common.stateOn) continue;
 
-          if (x !== maxW - 1) {
+          if (x !== maxX - 1) {
             // 横置き
             if (app.common.states[y][x + 1] === app.common.stateOn) {
               numDomino++;
@@ -151,7 +151,7 @@
             }
           }
 
-          if (y !== maxH - 1) {
+          if (y !== maxY - 1) {
             // 縦置き
             if (app.common.states[y + 1][x] === app.common.stateOn) {
               numDomino++;
@@ -201,8 +201,8 @@
       const rect = svg.createRect(blockSize, {
         x: 0,
         y: 0,
-        width: maxW,
-        height: maxH,
+        width: maxX,
+        height: maxY,
         fill,
         stroke,
       });
@@ -214,11 +214,11 @@
       const dotRatio = 1 / 40;
       const size = blockSize * dotRatio;
       const strokeDasharray = `${size} ${4 * size}`;
-      for (let y = 1; y < maxH; y++) {
+      for (let y = 1; y < maxY; y++) {
         const line = svg.createLine(blockSize, {
           x1: -0.5 * dotRatio,
           y1: y,
-          x2: maxW,
+          x2: maxX,
           y2: y,
           stroke: lineColor,
         });
@@ -226,12 +226,12 @@
         line.setAttribute('stroke-dasharray', strokeDasharray);
         g.appendChild(line);
       }
-      for (let x = 1; x < maxW; x++) {
+      for (let x = 1; x < maxX; x++) {
         const line = svg.createLine(blockSize, {
           x1: x,
           y1: -0.5 * dotRatio,
           x2: x,
-          y2: maxH,
+          y2: maxY,
           stroke: lineColor,
         });
         line.setAttribute('stroke-dasharray', strokeDasharray);
@@ -239,9 +239,9 @@
       }
     }
 
-    for (let y = 0; y < maxH; y++) {
+    for (let y = 0; y < maxY; y++) {
       if (states[y] === undefined) break;
-      for (let x = 0; x < maxW; x++) {
+      for (let x = 0; x < maxX; x++) {
         if (states[y][x] === undefined) break;
         const floorColor = (x + y) % 2 === 0 ? floorColorEven : floorColorOdd;
         const fill = states[y][x] !== stateOn ? emptyColor : floorColor;

@@ -5,6 +5,7 @@
   const app = window.app;
   Object.freeze(app);
   const elems = app.elems;
+  const common = app.common;
 
   let drawingFlag = false;
   let drawingState = null;
@@ -16,6 +17,19 @@
 
   function onloadApp() {
     elems.version.textContent = VERSION_TEXT;
+
+    if (
+      common.maxX !== common.defaultMaxX ||
+      common.maxY !== common.defaultMaxY
+    ) {
+      hideElem(elems.collectionButtonDiv);
+      hideElem(elems.notice);
+    }
+
+    function hideElem(elem) {
+      if (!elem) return;
+      elem.classList.add('hide');
+    }
 
     const queryStrs = location.href.split('?')[1];
     if (queryStrs !== undefined) {
@@ -94,12 +108,12 @@
     const x = clamp(
       Math.floor(cursorPos.x / app.common.blockSize),
       0,
-      app.common.maxW - 1
+      app.common.maxX - 1
     );
     const y = clamp(
       Math.floor(cursorPos.y / app.common.blockSize),
       0,
-      app.common.maxH - 1
+      app.common.maxY - 1
     );
     return { x, y };
 
@@ -153,8 +167,8 @@
   function updateSvg() {
     elems.svg.textContent = '';
 
-    elems.svg.setAttribute('width', app.common.blockSize * app.common.maxW);
-    elems.svg.setAttribute('height', app.common.blockSize * app.common.maxH);
+    elems.svg.setAttribute('width', app.common.blockSize * app.common.maxX);
+    elems.svg.setAttribute('height', app.common.blockSize * app.common.maxY);
 
     const g = app.common.createStatesG(app.common.states, app.common.blockSize);
     elems.svg.appendChild(g);

@@ -70,8 +70,8 @@
     }
 
     saveCollectionState(count, states) {
-      if (app.common.maxW !== app.common.defaultW) return;
-      if (app.common.maxH !== app.common.defaultH) return;
+      if (app.common.maxX !== app.common.defaultMaxX) return;
+      if (app.common.maxY !== app.common.defaultMaxY) return;
 
       elems.notice.innerHTML = '<br>';
       const prev = this.data.counts[count];
