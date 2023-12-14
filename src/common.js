@@ -49,7 +49,7 @@
   for (let y = 0; y < maxY; ++y) {
     states[y] = [];
     for (let x = 0; x < maxX; ++x) {
-      states[y][x] = stateOn;
+      states[y][x] = stateOff;
     }
   }
 
