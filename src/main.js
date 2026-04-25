@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v' + '2026.04.25';
+  const VERSION_TEXT = 'v' + '2026.04.25b';
 
   const app = window.app;
   Object.freeze(app);
@@ -49,53 +49,59 @@
       }
     }
 
+    const downEvent =
+      window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
+    const moveEvent =
+      window.ontouchmove !== undefined ? 'touchmove' : 'mousemove';
+    const upEvent = window.ontouchend !== undefined ? 'touchend' : 'mouseup';
+
     elems.collections.button.addEventListener(
-      'pointerdown',
+      downEvent,
       app.dialog.collections.show
     );
     elems.collections.dialog.addEventListener(
-      'pointerdown',
+      downEvent,
       app.dialog.collections.close
     );
-    elems.collections.dialogDiv.addEventListener('pointerdown', (e) =>
+    elems.collections.dialogDiv.addEventListener(downEvent, (e) =>
       e.stopPropagation()
     );
     elems.collections.close.addEventListener(
-      'pointerdown',
+      downEvent,
       app.dialog.collections.close
     );
 
     {
-      elems.collections.prev.addEventListener('pointerdown', (e) => {
+      elems.collections.prev.addEventListener(downEvent, (e) => {
         e.preventDefault();
         app.dialog.collections.prevPage();
         intervalPrevId = setInterval(app.dialog.collections.prevPage, 300);
       });
-      elems.collections.prev.addEventListener('pointerup', () => {
+      elems.collections.prev.addEventListener(upEvent, () => {
         clearInterval(intervalPrevId);
       });
     }
 
     {
-      elems.collections.next.addEventListener('pointerdown', (e) => {
+      elems.collections.next.addEventListener(downEvent, (e) => {
         e.preventDefault();
         app.dialog.collections.nextPage();
         intervalNextId = setInterval(app.dialog.collections.nextPage, 300);
       });
-      elems.collections.next.addEventListener('pointerup', () => {
+      elems.collections.next.addEventListener(upEvent, () => {
         clearInterval(intervalNextId);
       });
     }
 
     elems.collections.pagesize.addEventListener(
-      'pointerdown',
+      downEvent,
       app.dialog.collections.togglePagesize
     );
 
-    elems.svg.addEventListener('pointerdown', pointerdown);
-    elems.svg.addEventListener('pointermove', pointermove);
-    elems.svg.addEventListener('pointerup', pointerup);
-    document.addEventListener('pointerup', pointerup);
+    elems.svg.addEventListener(downEvent, pointerdown);
+    elems.svg.addEventListener(moveEvent, pointermove);
+    elems.svg.addEventListener(upEvent, pointerup);
+    document.addEventListener(upEvent, pointerup);
 
     update();
   }
