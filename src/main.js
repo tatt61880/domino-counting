@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v' + '2023.12.14';
+  const VERSION_TEXT = 'v' + '2026.04.25';
 
   const app = window.app;
   Object.freeze(app);
@@ -10,6 +10,9 @@
   let drawingFlag = false;
   let drawingState = null;
   const prev = { x: null, y: null };
+
+  let intervalPrevId;
+  let intervalNextId;
 
   document.addEventListener('DOMContentLoaded', onloadApp);
   return;
@@ -46,44 +49,51 @@
       }
     }
 
-    const downEvent =
-      window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
-    const moveEvent =
-      window.ontouchmove !== undefined ? 'touchmove' : 'mousemove';
-    const upEvent = window.ontouchend !== undefined ? 'touchend' : 'mouseup';
-
     elems.collections.button.addEventListener(
-      downEvent,
+      'pointerdown',
       app.dialog.collections.show
     );
     elems.collections.dialog.addEventListener(
-      downEvent,
+      'pointerdown',
       app.dialog.collections.close
     );
-    elems.collections.dialogDiv.addEventListener(downEvent, (e) =>
+    elems.collections.dialogDiv.addEventListener('pointerdown', (e) =>
       e.stopPropagation()
     );
     elems.collections.close.addEventListener(
-      downEvent,
+      'pointerdown',
       app.dialog.collections.close
     );
-    elems.collections.prev.addEventListener(
-      downEvent,
-      app.dialog.collections.prevPage
-    );
-    elems.collections.next.addEventListener(
-      downEvent,
-      app.dialog.collections.nextPage
-    );
+
+    {
+      elems.collections.prev.addEventListener('pointerdown', () => {
+        app.dialog.collections.prevPage();
+        intervalPrevId = setInterval(app.dialog.collections.prevPage, 300);
+      });
+      elems.collections.prev.addEventListener('pointerup', () => {
+        clearInterval(intervalPrevId);
+      });
+    }
+
+    {
+      elems.collections.next.addEventListener('pointerdown', () => {
+        app.dialog.collections.nextPage();
+        intervalNextId = setInterval(app.dialog.collections.nextPage, 300);
+      });
+      elems.collections.next.addEventListener('pointerup', () => {
+        clearInterval(intervalNextId);
+      });
+    }
+
     elems.collections.pagesize.addEventListener(
-      downEvent,
+      'pointerdown',
       app.dialog.collections.togglePagesize
     );
 
-    elems.svg.addEventListener(downEvent, pointerdown);
-    elems.svg.addEventListener(moveEvent, pointermove);
-    elems.svg.addEventListener(upEvent, pointerup);
-    document.addEventListener(upEvent, pointerup);
+    elems.svg.addEventListener('pointerdown', pointerdown);
+    elems.svg.addEventListener('pointermove', pointermove);
+    elems.svg.addEventListener('pointerup', pointerup);
+    document.addEventListener('pointerup', pointerup);
 
     update();
   }
@@ -139,6 +149,8 @@
   function pointerup(e) {
     e.preventDefault();
     drawingFlag = false;
+    clearInterval(intervalPrevId);
+    clearInterval(intervalNextId);
   }
 
   function pointermove(e) {
