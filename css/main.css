@@ -109,6 +109,7 @@ text {
 .button {
   pointer-events: auto;
   cursor: pointer;
+  -webkit-user-select: none; /* Safari 対応 */
   user-select: none;
 }
 

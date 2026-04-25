@@ -66,7 +66,8 @@
     );
 
     {
-      elems.collections.prev.addEventListener('pointerdown', () => {
+      elems.collections.prev.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
         app.dialog.collections.prevPage();
         intervalPrevId = setInterval(app.dialog.collections.prevPage, 300);
       });
@@ -76,7 +77,8 @@
     }
 
     {
-      elems.collections.next.addEventListener('pointerdown', () => {
+      elems.collections.next.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
         app.dialog.collections.nextPage();
         intervalNextId = setInterval(app.dialog.collections.nextPage, 300);
       });
