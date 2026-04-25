@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v' + '2026.04.25b';
+  const VERSION_TEXT = 'v' + '2026.04.25';
 
   const app = window.app;
   Object.freeze(app);
@@ -49,54 +49,58 @@
       }
     }
 
-    const downEvent =
-      window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
-    const moveEvent =
-      window.ontouchmove !== undefined ? 'touchmove' : 'mousemove';
-    const upEvent = window.ontouchend !== undefined ? 'touchend' : 'mouseup';
-
     elems.collections.button.addEventListener(
-      downEvent,
+      'pointerdown',
       app.dialog.collections.show
     );
     elems.collections.dialog.addEventListener(
-      downEvent,
+      'pointerdown',
       app.dialog.collections.close
     );
-    elems.collections.dialogDiv.addEventListener(downEvent, (e) =>
+    elems.collections.dialogDiv.addEventListener('pointerdown', (e) =>
       e.stopPropagation()
     );
-    elems.collections.close.addEventListener(
-      downEvent,
-      app.dialog.collections.close
-    );
 
+    // ◀
     {
-      elems.collections.prev.addEventListener(downEvent, (e) => {
+      elems.collections.prev.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         app.dialog.collections.prevPage();
         intervalPrevId = setInterval(app.dialog.collections.prevPage, 300);
       });
-      elems.collections.prev.addEventListener(upEvent, () => {
+      elems.collections.prev.addEventListener('pointerup', () => {
         clearInterval(intervalPrevId);
       });
     }
 
+    // ✕
+    elems.collections.close.addEventListener(
+      'pointerdown',
+      app.dialog.collections.close
+    );
+
+    // ▶
     {
-      elems.collections.next.addEventListener(downEvent, (e) => {
+      elems.collections.next.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         app.dialog.collections.nextPage();
         intervalNextId = setInterval(app.dialog.collections.nextPage, 300);
       });
-      elems.collections.next.addEventListener(upEvent, () => {
+      elems.collections.next.addEventListener('pointerup', () => {
         clearInterval(intervalNextId);
       });
     }
 
     elems.collections.pagesize.addEventListener(
-      downEvent,
+      'pointerdown',
       app.dialog.collections.togglePagesize
     );
+
+    const downEvent =
+      window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
+    const moveEvent =
+      window.ontouchmove !== undefined ? 'touchmove' : 'mousemove';
+    const upEvent = window.ontouchend !== undefined ? 'touchend' : 'mouseup';
 
     elems.svg.addEventListener(downEvent, pointerdown);
     elems.svg.addEventListener(moveEvent, pointermove);
