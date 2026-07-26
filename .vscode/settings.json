@@ -14,6 +14,5 @@
   "editor.formatOnSave": true,
   "files.autoGuessEncoding": false,
   "files.encoding": "utf8",
-  "files.insertFinalNewline": true,
-  "liveServer.settings.port": 31529,
+  "files.insertFinalNewline": true
 }
