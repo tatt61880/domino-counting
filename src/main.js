@@ -161,16 +161,20 @@
     if (event.pointerId !== pointerId) return;
     const cur = getCursorXY(event);
     if (!cur) { previous = null; return; }
+    let changed = false;
     const start = previous || cur;
     const steps = Math.max(Math.abs(cur.x - start.x), Math.abs(cur.y - start.y));
     for (let i = 0; i <= steps; i++) {
       const ratio = steps === 0 ? 0 : i / steps;
       const x = Math.round(start.x + (cur.x - start.x) * ratio);
       const y = Math.round(start.y + (cur.y - start.y) * ratio);
-      common.states[y][x] = drawingState;
+      if (common.states[y][x] !== drawingState) {
+        common.states[y][x] = drawingState;
+        changed = true;
+      }
     }
     previous = cur;
-    update();
+    if (changed) update();
   }
 
   function finishStroke(event) {

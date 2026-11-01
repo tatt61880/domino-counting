@@ -92,13 +92,20 @@
   let worker;
   let requestId = 0;
   let timeout;
+  let startTimer;
   let analysis = null;
   let resultCount = null;
 
   function updateResult() {
     const id = ++requestId;
-    worker?.terminate();
+    clearTimeout(startTimer);
     clearTimeout(timeout);
+    if (worker) {
+      worker.onmessage = null;
+      worker.onerror = null;
+      worker.terminate();
+      worker = null;
+    }
     analysis = null;
     resultCount = null;
     app.elems.notice.textContent = '';
@@ -115,32 +122,47 @@
     app.elems.numEven.textContent = `×${even}`;
     app.elems.numOdd.textContent = `×${odd}`;
     app.elems.result.textContent = '計算中…';
-    try {
-      worker = new Worker('./src/count-worker.js');
-      worker.onmessage = ({ data }) => {
-        if (data.id !== requestId) return;
+    // Coalesce rapid pointer updates instead of starting a worker per event.
+    startTimer = setTimeout(() => {
+      let currentWorker;
+      const isCurrent = () => id === requestId && worker === currentWorker;
+      try {
+        currentWorker = new Worker('./src/count-worker.js');
+        worker = currentWorker;
+        currentWorker.onmessage = ({ data }) => {
+          if (!isCurrent() || data.id !== id) return;
+          clearTimeout(timeout);
+          currentWorker.terminate();
+          worker = null;
+          analysis = data;
+          resultCount = data.count ?? null;
+          app.elems.result.textContent = data.count === null || data.error
+            ? '計算量の上限に達しました' : `${data.count}通り`;
+          if (resultCount !== null) app.savedata.saveCollectionState(resultCount, states);
+          document.dispatchEvent(new Event('domino-result'));
+        };
+        currentWorker.onerror = () => {
+          if (!isCurrent()) return;
+          clearTimeout(timeout);
+          currentWorker.terminate();
+          worker = null;
+          app.elems.result.textContent = '計算を実行できませんでした';
+        };
+        timeout = setTimeout(() => {
+          if (!isCurrent()) return;
+          currentWorker.terminate();
+          worker = null;
+          app.elems.result.textContent = '計算量の上限に達しました';
+        }, 5000);
+        currentWorker.postMessage({ id, states });
+      } catch {
+        if (id !== requestId) return;
         clearTimeout(timeout);
-        worker.terminate();
-        analysis = data;
-        resultCount = data.count ?? null;
-        app.elems.result.textContent = data.count === null || data.error
-          ? '計算量の上限に達しました' : `${data.count}通り`;
-        if (resultCount !== null) app.savedata.saveCollectionState(resultCount, states);
-        document.dispatchEvent(new Event('domino-result'));
-      };
-      worker.onerror = () => {
-        clearTimeout(timeout);
-        worker.terminate();
+        currentWorker?.terminate();
+        worker = null;
         app.elems.result.textContent = '計算を実行できませんでした';
-      };
-      timeout = setTimeout(() => {
-        worker.terminate();
-        app.elems.result.textContent = '計算量の上限に達しました';
-      }, 5000);
-      worker.postMessage({ id, states });
-    } catch {
-      app.elems.result.textContent = '計算を実行できませんでした';
-    }
+      }
+    }, 40);
   }
 
   common.getResult = () => resultCount;
