@@ -12,25 +12,12 @@
 
   const option = {};
 
-  const queryStrs = location.href.split('?')[1];
-  if (queryStrs !== undefined) {
-    for (const queryStr of queryStrs.split('&')) {
-      const paramArray = queryStr.split('=');
-      const paramName = paramArray[0];
-      const paramVal = paramArray[1];
-      switch (paramName) {
-        case 'w':
-          option.w = Number(paramVal);
-          break;
-        case 'h':
-          option.h = Number(paramVal);
-          break;
-        case 's':
-          option.s = paramVal;
-          break;
-      }
-    }
+  const params = new URLSearchParams(location.search);
+  for (const key of ['w', 'h']) {
+    const value = Number(params.get(key));
+    if (Number.isInteger(value) && value >= 1 && value <= 30) option[key] = value;
   }
+  option.s = params.get('s');
 
   const defaultMaxX = 7;
   const defaultMaxY = 6;
@@ -71,7 +58,6 @@
       } else {
         if (x >= maxX) continue;
         states[y][x] = c === '1' ? stateOn : stateOff;
-        console.log(c);
         x++;
       }
     }
@@ -103,92 +89,62 @@
     defaultMaxY,
   };
 
-  function dominoCount() {
-    let ans = 0;
-    let numDomino = 0;
-    let numOdd = 0;
-    let numEven = 0;
-
-    for (let y = 0; y < maxY; y++) {
-      for (let x = 0; x < maxX; x++) {
-        if (app.common.states[y][x] !== app.common.stateOn) continue;
-
-        if ((x + y) % 2 === 0) {
-          numEven++;
-        } else {
-          numOdd++;
-        }
-      }
-    }
-
-    if (numEven !== numOdd) {
-      return [0, numEven, numOdd];
-    }
-
-    if (numEven === 0) {
-      return [1, numEven, numOdd];
-    }
-
-    const numDominoMax = numEven;
-
-    dfs(0, 0);
-
-    return [ans, numEven, numOdd];
-
-    function dfs(y0, x0) {
-      for (let y = y0; y < maxY; y++) {
-        const x00 = y === y0 ? x0 : 0;
-        for (let x = x00; x < maxX; x++) {
-          if (app.common.states[y][x] !== app.common.stateOn) continue;
-
-          if (x !== maxX - 1) {
-            // 横置き
-            if (app.common.states[y][x + 1] === app.common.stateOn) {
-              numDomino++;
-              if (numDomino === numDominoMax) {
-                ans++;
-              } else {
-                app.common.states[y][x] = app.common.states[y][x + 1] =
-                  app.common.stateOff;
-                dfs(y, x + 2);
-                app.common.states[y][x] = app.common.states[y][x + 1] =
-                  app.common.stateOn;
-              }
-              numDomino--;
-            }
-          }
-
-          if (y !== maxY - 1) {
-            // 縦置き
-            if (app.common.states[y + 1][x] === app.common.stateOn) {
-              numDomino++;
-              if (numDomino === numDominoMax) {
-                ans++;
-              } else {
-                app.common.states[y][x] = app.common.states[y + 1][x] =
-                  app.common.stateOff;
-                dfs(y, x + 1);
-                app.common.states[y][x] = app.common.states[y + 1][x] =
-                  app.common.stateOn;
-              }
-              numDomino--;
-            }
-          }
-          return;
-        }
-      }
-    }
-  }
+  let worker;
+  let requestId = 0;
+  let timeout;
+  let analysis = null;
+  let resultCount = null;
 
   function updateResult() {
-    const [result, numEven, numOdd] = dominoCount();
-
-    app.elems.numEven.innerText = `×${numEven}`;
-    app.elems.numOdd.innerText = `×${numOdd}`;
-    app.elems.result.innerText = `${result}通り`;
-
-    app.savedata.saveCollectionState(result, app.common.states);
+    const id = ++requestId;
+    worker?.terminate();
+    clearTimeout(timeout);
+    analysis = null;
+    resultCount = null;
+    app.elems.notice.textContent = '';
+    let even = 0;
+    let odd = 0;
+    for (let y = 0; y < maxY; y++) {
+      for (let x = 0; x < maxX; x++) {
+        if (states[y][x] === stateOn) {
+          if ((x + y) % 2 === 0) even++;
+          else odd++;
+        }
+      }
+    }
+    app.elems.numEven.textContent = `×${even}`;
+    app.elems.numOdd.textContent = `×${odd}`;
+    app.elems.result.textContent = '計算中…';
+    try {
+      worker = new Worker('./src/count-worker.js');
+      worker.onmessage = ({ data }) => {
+        if (data.id !== requestId) return;
+        clearTimeout(timeout);
+        worker.terminate();
+        analysis = data;
+        resultCount = data.count ?? null;
+        app.elems.result.textContent = data.count === null || data.error
+          ? '計算量の上限に達しました' : `${data.count}通り`;
+        if (resultCount !== null) app.savedata.saveCollectionState(resultCount, states);
+        document.dispatchEvent(new Event('domino-result'));
+      };
+      worker.onerror = () => {
+        clearTimeout(timeout);
+        worker.terminate();
+        app.elems.result.textContent = '計算を実行できませんでした';
+      };
+      timeout = setTimeout(() => {
+        worker.terminate();
+        app.elems.result.textContent = '計算量の上限に達しました';
+      }, 5000);
+      worker.postMessage({ id, states });
+    } catch {
+      app.elems.result.textContent = '計算を実行できませんでした';
+    }
   }
+
+  common.getResult = () => resultCount;
+  common.getAnalysis = () => analysis;
 
   // 盤面図形を作成
   function createStatesG(states, blockSize) {
@@ -200,6 +156,12 @@
 
     const floorColorEven = '#ffbb88';
     const floorColorOdd = '#ffaa88';
+    const invalidCells = new Set();
+    if (states === common.states && analysis?.islands) {
+      for (const island of analysis.islands) {
+        if (island.count === '0') island.cells.forEach((id) => invalidCells.add(id));
+      }
+    }
     const floorStroke = '#fd7e00';
 
     {
@@ -250,7 +212,9 @@
       if (states[y] === undefined) break;
       for (let x = 0; x < maxX; x++) {
         if (states[y][x] === undefined) break;
-        const floorColor = (x + y) % 2 === 0 ? floorColorEven : floorColorOdd;
+        const floorColor = invalidCells.has(y * maxX + x)
+          ? ((x + y) % 2 === 0 ? '#c9c9dc' : '#aaaac4')
+          : ((x + y) % 2 === 0 ? floorColorEven : floorColorOdd);
         const fill = states[y][x] !== stateOn ? emptyColor : floorColor;
         const stroke = states[y][x] !== stateOn ? emptyStroke : floorStroke;
         const rect = svg.createRect(blockSize, {

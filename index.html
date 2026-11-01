@@ -4,7 +4,7 @@
 <head>
   <title>ドミノタイリングの数え上げ</title>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=500">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="./images/favicon.png?2023.10.30">
   <link rel="apple-touch-icon" sizes="152x152" href="./images/apple-touch-icon.png?2023.10.30">
   <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
@@ -48,7 +48,18 @@
         </div>
 
         <svg id="main-svg"></svg>
-        <div id="result"></div>
+        <div id="result" role="status" aria-live="polite"></div>
+        <div class="tools">
+          <button id="undo" type="button">元に戻す</button>
+          <button id="redo" type="button">やり直す</button>
+          <button id="clear" type="button">全消去</button>
+        </div>
+        <div class="tools">
+          <button id="share-url" type="button">URLコピー</button>
+          <button id="copy-image" type="button">画像コピー</button>
+          <button id="save-image" type="button">画像保存</button>
+          <button id="help-button" type="button">使い方</button>
+        </div>
 
         <div id="collection-button-div">
           <svg width="150" height="100">
@@ -60,7 +71,7 @@
             </g>
           </svg>
         </div>
-        <span id="notice"></span>
+        <span id="notice" role="status"></span>
       </div>
     </div>
 
@@ -68,13 +79,18 @@
       <div id="dialog-collections-div">
         <div id="collections-top">
           <p id="collections-num"></p>
+          <label for="collection-order">登録基準：</label>
+          <select id="collection-order">
+            <option value="original">従来（ビット列順）</option>
+            <option value="compact">マス数・面積優先（別記録）</option>
+          </select>
 
           <svg id="dialog-collections-svg">
           </svg>
 
           <br>
 
-          <svg width="450" height="80" id="button-collections-svg">
+          <svg width="450" height="80" viewBox="0 0 450 80" id="button-collections-svg">
             <g id="button-collections-prev" class="button active-hover" transform="translate(85,15)">
               <rect x="0" y="0" rx="28" ry="28" width="80" height="56" fill="#eef0ff" stroke="#87ceeb"
                 stroke-width="4" />
@@ -104,6 +120,18 @@
           </svg>
         </div>
       </div>
+    </dialog>
+
+    <dialog id="help-dialog" aria-labelledby="help-title">
+      <h2 id="help-title">使い方</h2>
+      <p>マスをクリック・タップして盤面を作ります。押したまま動かすと、同じ状態で塗れます。</p>
+      <p>選んだマスを1×2のドミノですべて埋める方法の数を数えます。空の盤面は1通りです。</p>
+      <p>敷き詰められない島は灰紫色で表示します。2色のマス数が同じでも、敷き詰められるとは限りません。</p>
+      <p>元に戻す：Ctrl / ⌘ + Z。やり直す：Ctrl / ⌘ + Shift + Z。ドラッグ1回を1操作として戻せます。</p>
+      <p>標準の7×6盤面では、通り数ごとの盤面を自動で記録します。従来の記録は従来どおりビット列順で更新します。別記録として、マス数、外接長方形の面積、ビット列の順に小さい盤面も保存します。コレクションの「登録基準」で表示を切り替えられます。記録はこのブラウザーに保存されます。</p>
+      <p>コレクションは← →でページ送り、Homeで先頭へ、Escで閉じられます。現在と同じ通り数は赤、同じ盤面は青い背景になります。</p>
+      <p>URLコピーで盤面を共有できます。画像コピーが使えない場合は画像保存をお使いください。大きく複雑な盤面は計算の上限に達することがあります。</p>
+      <button id="help-close" type="button">閉じる</button>
     </dialog>
 
     <footer>

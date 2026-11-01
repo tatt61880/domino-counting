@@ -12,7 +12,7 @@ body {
 }
 
 #contents {
-  width: 500px;
+  width: min(100%, 500px);
   margin: 0 auto;
   text-align: center;
   background-color: white;
@@ -23,7 +23,7 @@ header {
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  height: 42px;
+  min-height: 42px;
   text-align: left;
   background-color: #c0cbff;
   border: 1px solid #c0cbff;
@@ -36,16 +36,17 @@ header .flex {
 }
 
 header .title {
-  margin: 10px;
-  font-size: 1.5rem;
+  margin: 6px;
+  font-size: clamp(0.85rem, 4vw, 1.3rem);
   font-weight: bold;
   color: #000055;
 }
 
 header #version {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: bold;
   color: #7777aa;
+  white-space: nowrap;
 }
 
 footer {
@@ -73,7 +74,11 @@ footer {
 }
 
 #main-svg {
+  box-sizing: border-box;
+  max-width: calc(100% - 10px);
+  height: auto;
   margin: 5px;
+  touch-action: none;
   cursor: pointer;
   border: 2px solid black;
 }
@@ -132,10 +137,52 @@ text {
 }
 
 #dialog-collections {
+  box-sizing: border-box;
   width: 490px;
+  max-width: calc(100vw - 12px);
   padding: 10px 0 0;
 }
 
 #dialog-collections-div {
   padding: 5px;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+button {
+  min-height: 36px;
+  padding: 6px 10px;
+  font: inherit;
+  cursor: pointer;
+  background: #eef0ff;
+  border: 1px solid #7799bb;
+  border-radius: 6px;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.button:focus-visible,
+button:focus-visible {
+  outline: 3px solid #254bc4;
+  outline-offset: 2px;
+}
+
+#dialog-collections svg {
+  max-width: 100%;
+  height: auto;
+}
+
+#help-dialog {
+  max-width: min(440px, calc(100vw - 48px));
+  line-height: 1.7;
+  text-align: left;
 }

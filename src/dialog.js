@@ -18,12 +18,15 @@
       nextPage: gotoNextCollectionsPage,
       close: closeCollectionsDialog,
       togglePagesize: toggleCollectionsPagesize,
+      refresh: updateCollectionsDialog,
+      firstPage: () => { page20 = 0; updateCollectionsDialog(); },
     },
   };
 
   // --------------------------------------------------------------------------
 
   let page20 = 0;
+  const collectionOrder = () => document.getElementById('collection-order').value;
   const pagesize20 = Symbol('pagesize20');
   const pagesize100 = Symbol('pagesize100');
   let pagesize = pagesize20;
@@ -39,10 +42,9 @@
   }
 
   function showCollectionsDialog() {
-    const num = app.savedata.getCollectionNum();
-    elems.collections.num.innerText = `コレクション数: ${num}`;
     updateCollectionsDialog();
     elems.collections.dialog.showModal();
+    elems.collections.close.focus();
   }
 
   function gotoPrevCollectionsPage() {
@@ -61,6 +63,8 @@
 
   function updateCollectionsDialog() {
     window.getSelection().removeAllRanges();
+    const num = app.savedata.getCollectionNum(collectionOrder());
+    elems.collections.num.innerText = `コレクション数: ${num}`;
 
     elems.collections.dialogSvg.innerHTML = '';
     const page = pagesize === pagesize20 ? page20 : Math.floor(page20 / 5);
@@ -80,6 +84,7 @@
 
     elems.collections.dialogSvg.setAttribute('width', WIDTH * COLS);
     elems.collections.dialogSvg.setAttribute('height', HEIGHT * ROWS);
+    elems.collections.dialogSvg.setAttribute('viewBox', `0 0 ${WIDTH * COLS} ${HEIGHT * ROWS}`);
 
     for (let i = page * NUM_PER_PAGE; i < (page + 1) * NUM_PER_PAGE; i++) {
       const count = i + 1;
@@ -107,7 +112,11 @@
       rect.setAttribute('ry', '5');
       g.appendChild(rect);
 
-      const sss = app.savedata.getCollectionState(count);
+      const sss = app.savedata.getCollectionState(count, collectionOrder());
+      const sameCount = String(count) === app.common.getResult();
+      const sameBoard = sss !== undefined && app.common.states.every((row, y) =>
+        row.reduce((mask, cell, x) => mask + (cell === app.common.stateOn ? 2 ** x : 0), 0) === (sss[y] || 0));
+      if (sameBoard) rect.setAttribute('fill', '#dcecff');
       if (sss === undefined) {
         if (pagesize === pagesize20) {
           const titleColor = '#ff3333';
@@ -141,26 +150,21 @@
         gStates.setAttribute('transform', `translate(7,5)`);
         g.appendChild(gStates);
 
-        const pointerdownEventName =
-          window.ontouchstart !== undefined ? 'touchstart' : 'mousedown';
-
         g.classList.add('button');
-        rect.addEventListener(pointerdownEventName, () => {
-          for (let y = 0; y < app.common.states.length; y++) {
-            for (let x = 0; x < app.common.states[0].length; x++) {
-              app.common.states[y][x] =
-                states[y] === undefined || states[y][x] !== app.common.stateOn
-                  ? app.common.stateOff
-                  : app.common.stateOn;
-            }
-          }
-          const g = app.common.createStatesG(
-            app.common.states,
-            app.common.blockSize
-          );
-          elems.svg.appendChild(g);
-          app.common.updateResult();
+        g.setAttribute('role', 'button');
+        g.setAttribute('tabindex', '0');
+        g.setAttribute('aria-label', `${count}通りの盤面を開く`);
+        gStates.style.pointerEvents = 'none';
+        const load = () => {
+          app.editBoard(states);
           closeCollectionsDialog();
+        };
+        g.addEventListener('click', load);
+        g.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            load();
+          }
         });
       }
 
@@ -170,7 +174,7 @@
           x: WIDTH / 2,
           y,
           text: count,
-          fill: '#000000',
+          fill: sameCount ? '#cc3300' : '#000000',
         });
         if (pagesize === pagesize20) {
           text.setAttribute('font-size', '16px');
@@ -185,6 +189,7 @@
 
   function closeCollectionsDialog() {
     elems.collections.dialog.close();
+    elems.collections.button.focus();
   }
 
   window.app = window.app || {};
