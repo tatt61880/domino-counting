@@ -103,8 +103,13 @@ text {
 }
 
 #result {
-  margin: 10px 0;
+  max-width: min(460px, calc(100vw - 40px));
+  height: 2.8rem;
+  margin: 10px auto;
+  overflow: auto hidden;
   font-size: 2rem;
+  line-height: 2.8rem;
+  white-space: nowrap;
 }
 
 #button-collections {
@@ -132,7 +137,10 @@ text {
 }
 
 #notice {
+  display: block;
+  min-height: 2.1rem;
   font-size: 1.5rem;
+  line-height: 2.1rem;
   color: #ee0000;
 }
 
