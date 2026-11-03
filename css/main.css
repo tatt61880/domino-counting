@@ -73,6 +73,11 @@ footer {
   vertical-align: middle;
 }
 
+#board-container {
+  touch-action: none;
+  user-select: none;
+}
+
 #main-svg {
   box-sizing: border-box;
   max-width: calc(100% - 10px);

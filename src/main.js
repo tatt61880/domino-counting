@@ -87,6 +87,13 @@
       else return;
       event.preventDefault();
     });
+    const boardContainer = document.getElementById('board-container');
+    // Safariで盤面上のタッチ移動をページスクロールへ渡さない。
+    for (const type of ['touchstart', 'touchmove']) {
+      boardContainer.addEventListener(type, (event) => {
+        if (event.cancelable) event.preventDefault();
+      }, { passive: false });
+    }
     elems.svg.addEventListener('pointerdown', pointerdown);
     elems.svg.addEventListener('pointermove', pointermove);
     elems.svg.addEventListener('pointerup', finishStroke);
