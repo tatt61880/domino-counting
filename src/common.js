@@ -94,6 +94,8 @@
   let timeout;
   let startTimer;
   let analysis = null;
+  // 再計算中もマスの色を保つため、表示には前回確定した判定を使う。
+  let colorAnalysis = null;
   let resultCount = null;
 
   function updateResult() {
@@ -136,6 +138,7 @@
           worker = null;
           analysis = data;
           resultCount = data.count ?? null;
+          if (resultCount !== null && !data.error) colorAnalysis = data;
           app.elems.result.textContent = data.count === null || data.error
             ? '計算量の上限に達しました' : `${data.count}通り`;
           if (resultCount !== null) app.savedata.saveCollectionState(resultCount, states);
@@ -179,8 +182,8 @@
     const floorColorEven = '#ffbb88';
     const floorColorOdd = '#ffaa88';
     const invalidCells = new Set();
-    if (states === common.states && analysis?.islands) {
-      for (const island of analysis.islands) {
+    if (states === common.states && colorAnalysis?.islands) {
+      for (const island of colorAnalysis.islands) {
         if (island.count === '0') island.cells.forEach((id) => invalidCells.add(id));
       }
     }
