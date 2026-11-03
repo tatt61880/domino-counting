@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const VERSION_TEXT = 'v' + '2026.11.01';
+  const VERSION_TEXT = 'v' + '2026.11.03';
 
   const app = window.app;
   const elems = app.elems;
@@ -56,12 +56,25 @@
       }
     }
 
-    setupButton(elems.collections.button, app.dialog.collections.show, 'コレクション');
+    setupButton(
+      elems.collections.button,
+      app.dialog.collections.show,
+      'コレクション'
+    );
     elems.collections.dialog.addEventListener('click', (event) => {
-      if (event.target === elems.collections.dialog) app.dialog.collections.close();
+      if (event.target === elems.collections.dialog)
+        app.dialog.collections.close();
     });
-    setupButton(elems.collections.close, app.dialog.collections.close, '閉じる');
-    setupButton(elems.collections.pagesize, app.dialog.collections.togglePagesize, '表示件数切り替え');
+    setupButton(
+      elems.collections.close,
+      app.dialog.collections.close,
+      '閉じる'
+    );
+    setupButton(
+      elems.collections.pagesize,
+      app.dialog.collections.togglePagesize,
+      '表示件数切り替え'
+    );
     for (const [button, action, label] of [
       [elems.collections.prev, app.dialog.collections.prevPage, '前のページ'],
       [elems.collections.next, app.dialog.collections.nextPage, '次のページ'],
@@ -78,9 +91,12 @@
       button.addEventListener('lostpointercapture', stopRepeat);
     }
     elems.collections.dialog.addEventListener('close', stopRepeat);
-    document.getElementById('collection-order').addEventListener('change', app.dialog.collections.refresh);
+    document
+      .getElementById('collection-order')
+      .addEventListener('change', app.dialog.collections.refresh);
     document.addEventListener('keydown', (event) => {
-      if (!elems.collections.dialog.open || event.target.tagName === 'SELECT') return;
+      if (!elems.collections.dialog.open || event.target.tagName === 'SELECT')
+        return;
       if (event.key === 'ArrowLeft') app.dialog.collections.prevPage();
       else if (event.key === 'ArrowRight') app.dialog.collections.nextPage();
       else if (event.key === 'Home') app.dialog.collections.firstPage();
@@ -90,31 +106,52 @@
     const boardContainer = document.getElementById('board-container');
     // Safariで盤面上のタッチ移動をページスクロールへ渡さない。
     for (const type of ['touchstart', 'touchmove']) {
-      boardContainer.addEventListener(type, (event) => {
-        if (event.cancelable) event.preventDefault();
-      }, { passive: false });
+      boardContainer.addEventListener(
+        type,
+        (event) => {
+          if (event.cancelable) event.preventDefault();
+        },
+        { passive: false }
+      );
     }
     elems.svg.addEventListener('pointerdown', pointerdown);
     elems.svg.addEventListener('pointermove', pointermove);
     elems.svg.addEventListener('pointerup', finishStroke);
     elems.svg.addEventListener('pointercancel', finishStroke);
     elems.svg.addEventListener('lostpointercapture', finishStroke);
-    window.addEventListener('blur', () => { finishStroke(); stopRepeat(); });
+    window.addEventListener('blur', () => {
+      finishStroke();
+      stopRepeat();
+    });
     document.addEventListener('domino-result', updateSvg);
     document.getElementById('undo').addEventListener('click', undo);
     document.getElementById('redo').addEventListener('click', redo);
     document.getElementById('clear').addEventListener('click', () => {
       if (common.states.some((row) => row.includes(common.stateOn))) {
-        app.editBoard(common.states.map((row) => row.map(() => common.stateOff)));
+        app.editBoard(
+          common.states.map((row) => row.map(() => common.stateOff))
+        );
       }
     });
     document.getElementById('share-url').addEventListener('click', copyUrl);
     document.getElementById('copy-image').addEventListener('click', copyImage);
     document.getElementById('save-image').addEventListener('click', saveImage);
-    document.getElementById('help-button').addEventListener('click', () => document.getElementById('help-dialog').showModal());
-    document.getElementById('help-close').addEventListener('click', () => document.getElementById('help-dialog').close());
+    document
+      .getElementById('help-button')
+      .addEventListener('click', () =>
+        document.getElementById('help-dialog').showModal()
+      );
+    document
+      .getElementById('help-close')
+      .addEventListener('click', () =>
+        document.getElementById('help-dialog').close()
+      );
     document.addEventListener('keydown', (event) => {
-      if (document.querySelector('dialog[open]') || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName)) return;
+      if (
+        document.querySelector('dialog[open]') ||
+        /INPUT|TEXTAREA|SELECT/.test(event.target.tagName)
+      )
+        return;
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
         event.preventDefault();
         if (event.shiftKey) redo();
@@ -144,7 +181,9 @@
   }
 
   function getCursorXY(event) {
-    const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(elems.svg.getScreenCTM().inverse());
+    const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(
+      elems.svg.getScreenCTM().inverse()
+    );
     const x = Math.floor(point.x / common.blockSize);
     const y = Math.floor(point.y / common.blockSize);
     if (x < 0 || y < 0 || x >= common.maxX || y >= common.maxY) return null;
@@ -159,7 +198,10 @@
     pointerId = event.pointerId;
     elems.svg.setPointerCapture(pointerId);
     strokeBefore = snapshot();
-    drawingState = common.states[cur.y][cur.x] === common.stateOff ? common.stateOn : common.stateOff;
+    drawingState =
+      common.states[cur.y][cur.x] === common.stateOff
+        ? common.stateOn
+        : common.stateOff;
     previous = null;
     pointermove(event);
   }
@@ -167,10 +209,16 @@
   function pointermove(event) {
     if (event.pointerId !== pointerId) return;
     const cur = getCursorXY(event);
-    if (!cur) { previous = null; return; }
+    if (!cur) {
+      previous = null;
+      return;
+    }
     let changed = false;
     const start = previous || cur;
-    const steps = Math.max(Math.abs(cur.x - start.x), Math.abs(cur.y - start.y));
+    const steps = Math.max(
+      Math.abs(cur.x - start.x),
+      Math.abs(cur.y - start.y)
+    );
     for (let i = 0; i <= steps; i++) {
       const ratio = steps === 0 ? 0 : i / steps;
       const x = Math.round(start.x + (cur.x - start.x) * ratio);
@@ -185,11 +233,16 @@
   }
 
   function finishStroke(event) {
-    if (pointerId === null || (event?.pointerId !== undefined && event.pointerId !== pointerId)) return;
+    if (
+      pointerId === null ||
+      (event?.pointerId !== undefined && event.pointerId !== pointerId)
+    )
+      return;
     const id = pointerId;
     pointerId = null;
     if (elems.svg.hasPointerCapture(id)) elems.svg.releasePointerCapture(id);
-    if (JSON.stringify(strokeBefore) !== JSON.stringify(common.states)) remember(strokeBefore);
+    if (JSON.stringify(strokeBefore) !== JSON.stringify(common.states))
+      remember(strokeBefore);
     strokeBefore = null;
     previous = null;
   }
@@ -203,7 +256,9 @@
 
   function restore(states) {
     for (let y = 0; y < common.maxY; y++) {
-      for (let x = 0; x < common.maxX; x++) common.states[y][x] = states[y]?.[x] === common.stateOn ? common.stateOn : common.stateOff;
+      for (let x = 0; x < common.maxX; x++)
+        common.states[y][x] =
+          states[y]?.[x] === common.stateOn ? common.stateOn : common.stateOff;
     }
     update();
     updateHistoryButtons();
@@ -232,9 +287,14 @@
     const url = new URL(location.href);
     url.search = '';
     url.hash = '';
-    if (common.maxX !== common.defaultMaxX) url.searchParams.set('w', common.maxX);
-    if (common.maxY !== common.defaultMaxY) url.searchParams.set('h', common.maxY);
-    url.searchParams.set('s', common.states.map((row) => row.join('')).join('-'));
+    if (common.maxX !== common.defaultMaxX)
+      url.searchParams.set('w', common.maxX);
+    if (common.maxY !== common.defaultMaxY)
+      url.searchParams.set('h', common.maxY);
+    url.searchParams.set(
+      's',
+      common.states.map((row) => row.join('')).join('-')
+    );
     try {
       await navigator.clipboard.writeText(url.href);
       elems.notice.textContent = 'URLをコピーしました';
@@ -246,7 +306,11 @@
   async function imageBlob() {
     const clone = elems.svg.cloneNode(true);
     clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)], { type: 'image/svg+xml' }));
+    const url = URL.createObjectURL(
+      new Blob([new XMLSerializer().serializeToString(clone)], {
+        type: 'image/svg+xml',
+      })
+    );
     try {
       const img = new Image();
       img.src = url;
@@ -255,7 +319,11 @@
       canvas.width = common.blockSize * common.maxX;
       canvas.height = common.blockSize * common.maxY;
       canvas.getContext('2d').drawImage(img, 0, 0);
-      return await new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('image'))));
+      return await new Promise((resolve, reject) =>
+        canvas.toBlob((blob) =>
+          blob ? resolve(blob) : reject(new Error('image'))
+        )
+      );
     } finally {
       URL.revokeObjectURL(url);
     }
@@ -263,10 +331,13 @@
 
   async function copyImage() {
     try {
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': imageBlob() })]);
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': imageBlob() }),
+      ]);
       elems.notice.textContent = '画像をコピーしました';
     } catch {
-      elems.notice.textContent = '画像コピーに対応していません。「画像保存」をお使いください';
+      elems.notice.textContent =
+        '画像コピーに対応していません。「画像保存」をお使いください';
     }
   }
 
@@ -293,7 +364,10 @@
 
     elems.svg.setAttribute('width', app.common.blockSize * app.common.maxX);
     elems.svg.setAttribute('height', app.common.blockSize * app.common.maxY);
-    elems.svg.setAttribute('viewBox', `0 0 ${common.blockSize * common.maxX} ${common.blockSize * common.maxY}`);
+    elems.svg.setAttribute(
+      'viewBox',
+      `0 0 ${common.blockSize * common.maxX} ${common.blockSize * common.maxY}`
+    );
 
     const g = app.common.createStatesG(app.common.states, app.common.blockSize);
     elems.svg.appendChild(g);
